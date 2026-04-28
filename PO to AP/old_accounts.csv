@@ -1,0 +1,1381 @@
+Old_Segment,Old_Description
+100000,FIXED ASSETS
+103000,Material
+103001,Material Over Head
+103002,Resource
+103003,Outside Processing
+103004,Overhead
+400000,SALES
+400100,Sales
+500103,Expense Valuation Account
+103008,Prepayment
+200003,AP Liability Account
+200004,Bills Payable
+400101,Earned/Unearned Discount
+500000,PURCHASE ACCOUNT
+500100,Cost of Goods Sold
+103005,Deferred COGS (Dont Use)
+200000,LOANS (LIABILITY)
+500101,Cost Variance Account
+500102,Invoice Price Variance
+200001,Inventory AP Accrual Account
+200002,Expense AP Accrual Account
+103006,Receiving Inventory Account
+103007,Clearing Account
+400002,Bulk Sales Revenue
+400102,Un-Earned Revenue
+400103,Earned Revenue
+110050,AXIS BANK OD 3704
+110051,AXIS BANK OD 6768
+110052,BDCC TAVARKERE (Camp) - 31919
+110053,BANK OF BARODA SB - 33850
+103025,Bamul Netting Account
+400104,Agency Renewal fees
+120000,Current Asset
+121000,Prepaid Advances
+121110,Prepaid insurance
+121120,Prepaid Expenses
+121130,Prepaid taxes
+121500,Uncleared Receipts
+121510,Unapplied Receipts
+121520,Unidentified Receipts
+121530,On Account Receipts
+121540,Miscellaneous Cash Receipts
+122000,Sundry Debtors
+122100,Sundry Debtors - MPCS
+122110,Sundry Debtors - MILK & PRODUCTS
+122120,Sundry Debtors - KMF & MILK UNIONS
+122130,Sundry Debtors (PVT Dairy)
+122140,Sundry Debtors (OTHERS)
+125000,Cash & Bank Balances
+125100,Cash on Hand
+125120,Cash Clearing
+125200,AXIS BANK CA - 50450
+270000,Current Liabilities
+271000,INTER UNION - CREDITORS
+271100,Sundry Creditors - MPCS
+271110,Sundry Creditors - Suppliers
+271120,Sundry Creditors - KMF & MILK UNIONS
+271130,Sundry Creditors (PVT Dairy)
+271140,Sundry Creditors (OTHERS)
+500104,RealizedGain/Loss
+500105,Bank Charges
+103017,Inter Org Receivables
+200005,Inter org Payables
+500106,Org Transfer Charges
+500107,Purchase Price Variance
+103018,Receivables
+0,Default Account
+400001,Route Sales Revenue
+110001,AXIS BANK CA - 39044
+103019,KMF Pro Sales
+500108,Sales Promotion Expenses
+103020,TCD&WSD Sales
+103021,KMF Depo Sales
+103022,Co-Packing
+400004,Co-Packing Revenue
+103023,Employee Subsidy
+103024,Special Sales
+110002,AXIS BANK CDM - 86114
+110003,AXIS BANK CA - 8955
+110004,AXIS BANK CC - 66337
+110005,AXIS BANK SB - 26756
+110006,AXIS BANK SB - 11138
+110007,Y1 AXIS BANK - 4787
+110008,AXIS BANK - GOK - SB - 69154
+110009,AXIS BANK - GOK DCS STAFF INCENTIVE - SB - 79354
+110010,Y AXIS BANK (VBMPS-V) 918010095802030
+110011,BANK OF BARODA SB - 0338
+110012,Y1 BANK OF BARODA ST.JOHN NAGAR 0337
+110013,Y BANK OF INDIA -Virgonagara (Camp) 0212
+110014,BDCC BANK CA - 53510
+110015,BDCC ANEKAL (Camp) - 00651
+110016,BDCC BIDADI (Camp) - 91931
+110017,BDCC CHENNAPATNA (Camp) - 50212
+110018,BDCC DEVANAHALLI (Camp) - 33591
+110019,BDCC DODDABALLAPURA (Camp) - 62008
+110020,BDCC HOSKOTE (Camp) - 23404
+110021,BDCC KANAKAPURA(Camp) - 45570
+110022,BDCC - MAGADI (Camp) - 32539
+110023,BDCC NELAMANGALA (Camp) - 68885
+110024,BDCC RAMANAGARA (Camp) - 26479
+110025,BDCC BANK CA - 53509
+110026,BHARAT CO-OPERATIVE BANK (Camp) - 0001
+110027,Y2 CANARA BANK - 0002
+110028,CANARA BANK SB - 06474
+110029,Y CANARA BANK UTTARAHALLI ( Camp) - 0356
+110030,CANARA BANK CA - 00001
+110031,CANARA BANK-SANJEEVENI - NRLM - 1 - 05444
+110032,Y3 CANARA BANK SCP 0028
+110033,Y BUBRRD COOP MPSU LTD VBMPS NDP 1 CANARA BANK 0038
+110034,Y3 CANARA BANK - SB 5463 (VBMPS-3)
+110035,Y CANARA BANK - SB 6424 (NDP-1 RBP-2)
+110036,Y CANARA BANK - SB 6476 (VBMPS-IV NDP-1)
+110037,ICICI BANK CA - 00031
+110038,KGB SOLUR (Camp) - 1907
+110039,Y1 KGB BSK 0047
+110040,Y2 STATE BANK OF INDIA - 0664
+110041,Y1 STATE BANK OF INDIA - 0030
+110042,SYNDICATE BANK - 00229
+110043,SYNDICATE BANK CA - 00214
+110044,Y3 SYNDICATE BANK - FD - NDP - 1 - 9740
+110045,YES BANK SB - 00174
+110046,AXIS BANK EASY PAY(Swiping Machine) - 7063
+110047,AXIS BANK SB - 4560
+110048,AXIS BANK (KMF ROTARY KAMADHENU) - 72227
+110049,AXIS BANK OD 6502
+103009,Cash Clearing Account
+103010,Remittance
+103011,Un-Applied Receipts
+103012,Un-Identified Receipts
+103013,Un-Billed Receivables
+103014,On-account Receipts
+103015,Asset Cost
+103016,Asset Clearing
+820000,Other Expenditure
+823000,Transaction Adjustment
+823100,Translation Adjustment
+823110,Rounding differences
+823120,Realized gain/loss
+823130,PO Rate variance Gain/Loss
+823140,Invoice Variance
+124010,Suspense Account
+330000,Retained Earnings
+611000,Material Expense
+276000,Inventory accural
+410000,Sales Account
+500500,Inventory Adjustimen (Misc)
+920000,Sales Tax Account
+823170,Chargeback Adjustment/Reversal
+130000,Inventory Valuation
+130100,Materials Valuation
+130200,Material Overhead
+130300,Resources Valuation
+130400,Outside Processing Valuation
+130500,Overhead Valuation
+131000,Raw Materials Valuation
+131100,Raw Materials Valuation - Material
+131200,Raw Materials Valuation - Material Overhead
+131300,Raw Materials Valuation - Resources
+131400,Raw Materials Valuation - OSP
+131500,Raw Materials Valuation - Overhead
+132000,WIP Valuation
+132100,WIP Valuation - Material
+132200,WIP Valuation - Material Overhead
+132300,WIP Valuation - Resources
+132400,WIP Valuation - OSP
+132500,WIP Valuation - Overhead
+132600,WIP Valuation - Estimated Scrap
+133000,Finish Goods Valuation
+134100,Finished Goods - Deferred COGS
+134200,Goods In Transit
+134300,Raw Material Accrual
+134500,Receiving Inventory
+134600,Inventory Clearing
+140000,"Loans, Advances & Deposits"
+141000,MPCS Advances
+141100,Milk Billing Advance (DCS)
+141200,MPCS Loans
+141110,Other Union Advances
+142000,STAFF ADVANCE
+143000,Material & Other Advances
+143100,Advance To Supplier & Firms
+143200,Advance To Staff For Materials/Expenses
+143210,Imprest Advance
+272110,ASD Charges
+199000,GOVT TAX Advances & Receivables
+199100,GST TAX Recoverable
+199110,TAX Interim Recovery GST
+199120,TAX Recovery GST
+199130,TAX Suspense GST
+299100,TAX Liability
+299110,TAX Interim Liability
+299120,TAX Liability Account
+823240,Tax Adjustments
+823250,GST Tax Paid
+199160,Inter Org TAX Receivable - GST
+299160,Inter Org TAX Payable
+103026,PRO-Sales
+103027,IU-Sales
+410050,Pro-Sales-Revenue
+410060,IU-Sales- Revenue
+110054,AXIS BANK SB - 21559
+110055,FreeCharge SMS Payment
+821110,PTC Transport Services
+821120,Cluster's Transport Services
+821130,DTC Transport Services
+821140,TCD Transport Services
+821150,KBS Transport Services
+821160,MVR/EV Transport Services
+821170,AI Transport Services
+821180,Officers Vehicle Transport Services
+821190,Medicine Transport Services
+821200,Camp Transport Services
+821210,FMD Transport Services
+821220,Product Transport Services
+821230,CFR Transport Services
+821240,MIlk Tanker Transport Services
+950000,Netting Control Account
+500109,Purchase Account
+821260,ADH Transport Service
+104210,SUNDRY DEBTORS - MILK & PRODUCTS
+104300,UN-IDENTIFIED DEPOSITS (BANKS)
+104310,AXIS ANONYMOUS DEPOSITS
+104350,BDCC ANONYMOUS DEPOSITS
+104360,BOB ANONYMOUS DEPOSITS
+104370,CANARA ANONYMOUS DEPOSITS
+104380,SYND ANONYMOUS DEPOSITS
+104400,SUNDRY DEBTORS - MPCS'S
+104410,SUNDRY DEBTORS - MPCS'S
+104550,SUNDRY DEBTORS( INTER STATE)
+104560,SUNDRY DEBTORS( INTER STATE)
+104650,SUNDRY DEBTORS(CHENNAI & A.P W.C&F)
+104700,SUNDRY DEBTORS-KMF & UNITS
+104710,K.M.F- KBS
+104720,KMF POOLING SCHEME
+104730,KMF PRODUCTS
+104740,KMF PRODUCTS
+500501,Promotional Sales Receivables Account
+500502,Promotional Sales Revenue Account
+500503,VIP Sales Receivables Account
+500504,VIP Sales Revenue Account
+100001,Bamul Closing Balance Account 2020
+TA,Total Assets
+100010,FIXED ASSETS
+100020,FIXED ASSETS
+100030,Asset Cost Accounts
+100100,Asset Clearing Accounts
+100150,Accumulated Depreciation
+100200,CAPITAL WORK IN PROGRESS
+100210,CAPITAL WORK IN PROGRESS
+100220,CIP Cost
+100320,CIP Clearing
+100400,INVESTMENTS
+100410,INVESTMENTS
+100420,INVESTMENTS
+100430,INVESTMENTS
+100500,CURRENT ASSETS
+100510,CLOSING STOCK
+100520,MILK & MILK PRODUCTS STOCK
+100530,Manufactured Products
+100600,Bought Out Products
+100650,P& I STOCK
+100660,Trading P&I Stock
+100700,Non Trading P&I Stock
+102900,Inventory
+102910,Inventory
+102920,Inventory required accounts
+103100,Raw Material
+103110,Raw Material
+103120,Raw Material required accounts
+103200,WIP
+103210,WIP
+103220,WIP required accounts
+103300,Balances
+100002,Opening Balances Account 2021
+821000,Transport Expenditure
+821100,BMC Transport Expenditure
+822000,Maintenance Expenditure
+822100,BMC Maintenance Expenditure
+400005,Other Revenue
+272111,MPCS Infrastructure Contribution
+272112,MPCS Staff Incentive
+272113,MPCS Trust
+272114,MPCS Staff Death & Returement Fund
+821250,CCT Transport Service
+501419,Ai Cluster Charges
+200701,Ai Cluster Charges Payable
+103310,Opening & Closing Balances
+103320,Closing Balance
+103350,Opening Balance
+103400,LOANS & ADVANCES (ASSET)
+103410,OTHER ADVANCES & DEPOSITS
+103420,Advance - Prepaid
+103430,Prepaid
+103500,SERVICE DEPOSITS
+103510,SERVICE DEPOSITS
+103600,AUDIT OBJECTIONS DR
+103610,AUDIT OBJECTIONS DR
+103650,STAFF ADVANCE
+103660,STAFF ADVANCE
+103700,OTHER ADVANCES
+103710,OTHER ADVANCES
+103850,Tax Accounts
+103860,Tax Accounts
+103870,GST Accounts
+103900,SUNDRY DEBTORS
+103910,Trade Receivables
+103920,Trade Receivable
+104000,Other Sale Accounts
+104100,OTHER DEBTORS
+104110,OTHER DEBTORS
+104200,SUNDRY DEBTORS - MILK & PRODUCTS
+501734,Chilling Centre Maintain
+501735,Contract Labour Charges
+501736,Electricity Charges
+501737,Freight Inward Milk Products
+501738,Freight Inward Consumables & Spares
+501739,Ghee Conversion Charges- Expenses
+501740,Is-Pur-Bmc Spares
+501741,Is-Pur-Building Repairs Mat
+501742,Is-Pur Laboratory Mat
+501743,General Insurance
+501744,Hosakote Dairy Maintenance
+501745,Kanakapura Dairy Maintenance Expenses
+501746,Kkp Gst-Is-Pur-Building Repairs Mat-18%
+501747,Kkp-Gst-L-Pur-Building Repairs Mat-18%
+501748,"Analysis Charges (Milk,Products & Materials)"
+501749,Laboratory Expneses
+501750,Maintenance/Repair Of Buildings-Factory
+501751,Packing Materials Charges
+501752,Paneer Way Water Transportation
+501753,Pest Control Expenses
+501754,Pollution Control Expenses
+501755,Product Storage Charge (Expenses)
+501756,Rent On Plant&Machinery
+501757,Repairs /Mainteance To Vehicle
+501758,Repairs To Plant & Machinary (Works)
+501759,S.M. To Smp Conversion Charges
+501760,Tanker Hire For Conversion
+501761,Iso & Haccp
+501762,Transit Insurance On Products
+501763,Transportation Charges - ETP
+501764,Vehicle Insurance
+501765,Vehicle Tax
+501766,Water Charges
+501767,Water Way Leave Charges-K.P
+501768,Wmp Conversion Charges
+501769,W.M. To Smp Conversion Charges
+501831,Electricity Tax
+501832,Fines & Penalties (Payment)
+501833,Profession Tax Expense
+501834,Other Rates & Taxes
+501931,Dcs Term Deposit Interest
+501932,Interest - Nddb Loan Under Didf
+501933,Interest On WCL
+501981,Advertisement & Publicity
+501982,Agmark Labelling & Grading
+501983,Brand Promotion Charges
+501984,Freight Outward Exepnses
+501985,Ground Rent Payment - Parlour
+501986,L-Pur Bottle/Visi Cooler
+501987,L-Pur-Sales Promotion Mat
+501988,L-Pur Visi Cooler
+501989,Ksheera Bhagya Scheme Expenses
+501990,Marketing Expenses
+501991,Rent - Marketing Regional Office
+501992,Repairs And Maintenace Of Parlours
+501993,Rural Marketing Transportation Expenses
+501995,Sales Promotion Exp (Free Supply/Gifts)
+501996,Subsidy For Bottle Coolers
+501997,Subsidy For Insulated Ice Box
+501998,Tanker Hire For Sales
+502002,RCD Transport Services
+502211,Computer Depreciation Expense
+502212,Furniture & Fixture Depreciation
+502213,Office Equipment Depreciation
+502214,Plant & Machinary Depreciation
+502215,Vehicles Depreciation
+502261,Income Tax Provision
+502262,Trade Fluctuation
+502263,Infrastructure Fund Provision
+100234,WIP-LMP EXPANSION  AT NMPC KANAKAPURA
+501771,L- Pur Laboratory Material
+501677,ERP Maintenance expenses
+501772,L-BUILDING MAINTANACE
+501773,L- Pur Laboratory Equipment
+500833,L-Pur Computers (Cap)
+501678,Registration and Renewal
+500111,IS-Pur-Ai Surgicals & Equipments
+501774,CHA Clearance Charges
+500834,L-Pur Vehicle (CAP)
+501770,L-Pur-Bmc Spares
+500835,L-Pur Lab Equipment (CAP)
+400006,Sale of Plant and Machinary
+100235,WIP - ERP Software Development
+501300,Kkp-L-Pur Raw Mat & Ingrediants
+500472,Pur Of Dcs Mtrl-Equipments NPDD ( Trd-Local)
+501532,Canteen Expenses (BNG)
+100031,Assets Under Ndp-1 Rbp
+100032,Bore Well
+100033,Buildings
+100034,Bulk Milk Coolers
+100035,Canteen Equipments
+100036,C O M P U T E R S
+100037,Effluent Treatment Plant
+100038,Furniture & Fixture
+100039,Laboratory Equipment
+100040,Land
+100041,Land On Lease
+100042,Ln2 Container
+100043,Office Equipment
+100044,Plant & Machinary
+100045,Solar Water Heating Plant (Cst)
+100046,Vehicles
+100151,Computer Accumulated Depreciation
+100152,Furniture & Fixture Accumulated Depreciation
+100153,Office Equipment Accumulated Depreciation
+100154,Plant & Machinary Accumulated Depreciation
+100155,Vehicles Accumulated Depreciation
+100221,Capital Advance To Kiadb Land
+100222,Capital Goods-In- Stock
+100223,Pre - Operative Expenses(Nmpc-Kanakapura)
+100224,Wip - Bengaluru East Camp
+100225,Wip - Cst Project(Megha Dairy)
+100226,Wip - Effluent Treatment Plant (Main Dairy)
+100227,Wip- Gowdown & Arch At Hosakote Dairy
+100228,Wip - Hosakote Dairy
+100229,Wip - Kanakapur Camp
+100230,Wip-Magadi Camp Office
+100231,Wip - Nmpc Kanakapura Dairy
+100232,Wip-Powder Plant At Nmpc Kanakapura
+100233,Wip - Product Block
+100321,CIP Clearing
+100431,Bdcc Bank Share
+100432,Kmf S H A R E
+100433,K M F Share Suspense Account
+100434,Reserve Fund Fixed Deposit
+100435,Fixed Deposit (Didf-Dsra) A/C
+100436,Fixed Deposit With Banks
+100437,Interest Accrued But Not Due
+100531,Milk Bulk
+100532,Milk Packed
+100533,Desi Milk
+100534,Flexi/UHT packed Milk
+100535,Curd Bulk
+100536,Curd Packed
+100537,WMP
+100538,SMP
+100539,SMP Sweep
+100540,Whey Powder
+100541,Butter Bulk
+100542,Butter Retail
+100543,Ghee Bulk
+100544,Ghee Retail
+100545,Cheddar Cheese
+100546,Mozirella Cheese
+100547,Processed Cheese
+100548,Paneer
+100549,Butter Milk
+100550,Sweet Lassi
+100551,Flavoured Milk
+100552,Mysore Pak
+100553,Peda
+100554,Khova
+100555,Kalakand
+100556,Paneer Burfi
+100557,Cream
+100601,NMP Products
+100602,UHT Milk
+100661,Liquid Nitrogen
+100662,Mineral Mixture
+EWS,EWS
+100664,Milk Analyser
+100665,Books & Registers- Trading
+100666,DCS Materials- Trading
+100667,Fodder &Seeds
+100668,Goudhara Shakthi
+100669,Milk Can & Lid
+100670,Vet Drugs-Trd
+100701,Vet Drugs-N.Trd
+100702,Books & Registers- Non Trading
+100703,DCS Materials- Non Trading
+100704,Postal stamps in hand
+103511,Deposit -Bda (Ca Sites)
+103512,Deposit Bwssb
+103513,Deposit Camp Offices/ Rent
+103514,Deposit Court
+103515,Deposit Hpc Gas
+103516,Deposit Keb
+103517,Deposit Parlours
+103518,Deposit Telephones
+103519,Deposit Wiht Bharath Gas
+103520,Rental Deposit (Marketing Office)
+103611,Audit Objection D.Halli Cf -Dr
+103661,Advance Festival
+103662,Advance Medical
+103663,Advance Terminal Benefit
+103664,Advance To Staff(Medical Expenses)-Salary Recovery
+103665,Advance To Staff (Quarters)
+103666,Gslis Recoverable
+103667,Welfare Fund Recovery
+103668,Salary Recoverable
+103712,Advance For Materials/Services (Staff)
+103713,Advance To Suppliers/Firms
+103714,Advance To N R L M
+103715,Axis Bank Bamul Branch (Rent)
+103716,Bharath Perolium Corpn. Ltd
+103717,D B Pura Parlour Building Rent
+103718,Hindustha Petrolium Corpn. Ltd
+103719,Indian Oil Corpn. Limited
+103720,Kmf A I Incentives
+103721,Kmf Retention
+103722,M/S. Lakshmi Narasimha Enterprises (Court Pymt)
+103723,Recovery From Bmc -Contractors
+104111,Interest Subvention Receivable
+104112,Sdrs- Cattle Feed Transport
+104113,Sdrs- Other Transport
+104114,Sdrs - Scrap Materials
+104115,Sdrs - Stores & Other Materials
+104116,Sdrs- Transport Contractor Dtc
+104117,Sdrs- Ln2
+104211,Fdr Amount Recd. From Bank
+104212,Sdrs-Ihq Of Mod (Army)
+104213,Sdrs - C C Retailors
+104214,Sdrs - Day Counter Customers
+104215,Sdrs - Parlour Concessioners
+104216,Sdrs - Tcd Retailers
+104217,Sdrs - Wsd Customers
+104218,Sdrs- Credit Institutions
+104219,Sdrs - Gen Customers
+104311,Axis Anonymous Deposits (Cdm-Bna)
+104312,Axis Anonymous Deposits (Edc-Cs)
+104313,Axis Anonymous Deposits (Neft-Rtgs)
+104314,Axis Anonymous Deposits (Saksham)
+104315,Axis Anonymous Deposits (Upi-Imps-Mob)
+104351,Bdcc Anonymous Deposits
+104361,Bob Anonymous Deposits (Cash)
+104362,Bob Anonymous Deposits (Digital)
+104371,Can Anonymous Deposits (Cash-6474)
+104381,Synd Anonymous Deposits (Cash-229)
+104382,Synd Anonymous Deposits (Digi-229)
+104411,Milk Bill Advance (Dcs)
+104412,Pp Loan Mopeds
+104413,Sdrs - Amcu
+104414,Sdrs - Azolla
+104415,Sdrs - Cattle Feed
+104416,Sdrs - Dcs Materails
+104417,Sdrs - Elec Weighing Scale
+104418,Sdrs - Feed Supplements
+104419,Sdrs - Fodder &Seeds
+104420,Sdrs - Frozen Semen (Mpcs)
+104421,Sdrs - Milk Analyzers
+104422,Sdrs- Mpcs Local Sales Levy
+104423,Sdrs - Mpcs (Milk Products)
+104424,Sdrs- Mpcs (Tcs U/S 206C (1H)
+104425,Sdrs - Producers (Ghee A/C)
+104426,Sdrs - Vet Madicines/Equipments
+104427,Sundry Debtors Mpcs Receivable
+104561,SDRS BULK MILK SALES- RECEAVABLES
+104562,Mother Dairy Fruits & Veg Pvt Ltd-Delhi
+104563,"Adyar Anand Bhavan Sweets India Pvt Ltd,."
+104564,"Akshara Foods Products,Dharmapuri"
+104565,"Alsfa Dairy Products, Hyderabad"
+104566,"Green Field Dairy Farms Pvt Ltd,."
+104567,Jagath Milk Dairy
+104568,"Kwality Milk Foods Pvt. Ltd,"
+104569,"Madhumitha Dairy Products Pvt.Ltd, Krishnagiri"
+104570,Mani Traders Pvt Ltd
+104571,Mr. Jamuna Palgova Company Ltd
+104572,"M/S Vijaya Sai Enter Prises Pvt Ltd,."
+104573,"Nalgonda Ranga Reddy Milk Pro Co Op Union Ltd,."
+104574,Pondichery Co-Op Milk Union
+104575,"Prakasham Milk Producers Co Ltd,."
+104576,Real Dairy Industries
+104577,Sabari Ayyappa Dairy Farms Pvt Ltd
+104578,"S N P Dairy Products, T.N"
+104579,Splash (Rich Dairy)
+104580,Sri Kannan Dairy Foods
+104581,Srinivasa Chilling Center
+104582,"Srinivasa Dairy Milk Panyam,"
+104583,"Taruni Dairy Products Pvt. Ltd.,"
+104584,Telanagana State Dairy Development Co-Op Federation
+104585,Velmurugan Milk Dairy
+104586,"Whilte Field Dairy Pvt Ltd.,"
+104651,"Fresco Dairy, Chennai"
+104652,"New Kwality Dairy, Chennai"
+104653,R.K.R Dairy Products Pvt Ltd (Wc&F Che )
+104654,"S.R. Traders, (Code: A-7256)"
+104655,S.V.V Traders (Surendra Reddy)
+104656,Vikram C M (Wc&F)
+104711,Kmf-Kbs Wmp Sales (Bamul)
+104712,Kmf-Kbs Wmp Sales-(Gumul)
+104721,Kmf Milk Pooling Scheme - A P
+104731,Kmf P R O Sales (Products)
+104741,Kmf-Chennai Sales Depot
+104742,Kmf-Hyderabad Sales Depot
+104743,Kmf-Kannur Sales Depot
+104744,Kmf-Kottayam Sales Depot
+104745,Kmf-Trichy Sales Depot
+104761,Kmf Bengaluru Sales Depot
+104762,Kmf-Hubballi Sales Depot
+104763,Kmf-Mangaluru Sales Depot
+104764,Kmf- Shivamogga Sales Depot
+104781,Kmf (Central Office)
+104782,"Kmf Unit- Mother Dairy, Bengaluru"
+104783,Nandini Hitech Mega Powder Plant-Ramanagara Receivable
+104784,Nandini Milk Products-Kmf Bengaluru
+104785,Kmf Grants Receivable
+104861,Belgaum Milk Union Receivable
+104862,Dakshina Kannada Milk Union
+104863,Dempo Dairy Industries Ltd
+104864,Gulbarga Milk Union Receivable
+104865,Mysore Milk Union Ltd
+104866,Chamarajanagara Milk Union Ltd Receivable
+104867,Dharwar Milk Union Receivable
+104868,Hassan Milk Union Ltd Receivable
+104869,Kalaburgi-Bidar & Yadgir Milk Union Receivable
+104870,Kolar Milk Union Ltd Receivable
+104871,Mandya Milk Union Ltd Receivable
+104872,"Raichur,Ballari & Koppal Milk Union Ltd Receivable"
+104873,Shimoga Milk Union Ltd Receivable
+104874,Tumkur Milk Union Ltd Receivable
+104875,Vijayapura-Bagalkot Milk Union Receivable
+104876,Chikkaballapura Milk Union Receivable
+104877,Haveri Milk Union Receivable
+104911,Abhiram Associates
+104912,Axis Bank Logi Cash
+104913,Deepak Starch & Chemicals Pvt Ltd
+104914,Karnataka Express Transport-Gst
+104915,Mohith Marketing
+104916,M/S Akshaya Patra Foundation-(Kbs)
+104917,M/S Atyam Subrahmanyam Traders
+104918,M/S Baba Deep Sing Trading Co
+104919,M/S. East End Enterprises
+104920,M/S Fooly Impex Pvt Ltd
+104921,M/S Shreya Group
+104922,M/S Sri Sai Enter Prises Pvt Ltd
+104923,Rama Enterprises
+104924,Sdrs - Others
+104925,"Warna Dairy, Kolhapur (Old Bal)"
+104926,Writer Business Services Pvt Ltd (Axis Bank)
+105721,BDCC ANEKAL (Camp) - 00651 Clearing
+105722,BDCC BIDADI (Camp) - 91931 Clearing
+105723,BDCC CHENNAPATNA (Camp) - 50212 Clearing
+105724,BDCC DEVANAHALLI (Camp) - 33591 Clearing
+105725,BDCC DODDABALLAPURA (Camp) - 62008 Clearing
+105726,BDCC HOSKOTE (Camp) - 23404 Clearing
+105727,BDCC KANAKAPURA(Camp) - 45570 Clearing
+105728,BDCC - MAGADI (Camp) - 32539 Clearing
+105729,BDCC NELAMANGALA (Camp) - 68885 Clearing
+105730,BDCC RAMANAGARA (Camp) - 26479 Clearing
+105731,BDCC TAVARKERE (Camp) - 31919 Clearing
+105732,BHARAT CO-OPERATIVE BANK (Camp) - 0001 Clearing
+105811,AXIS BANK SB - 11138 Clearing
+105812,BDCC BANK CA - 53509 Clearing
+105911,AXIS BANK CDM - 86114 Clearing
+105912,AXIS BANK CA - 8955 Clearing
+105913,AXIS BANK CA - 39044 Clearing
+105914,AXIS BANK EASY PAY(Swiping Machine) - 7063 Clearing
+105915,BDCC BANK CA - 53510 Clearing
+105916,Y2 CANARA BANK - 0002 Clearing
+105917,CANARA BANK SB - 06474 Clearing
+106101,Y3 CANARA BANK SCP 0028 Clearing
+106211,AXIS BANK CC - 66337 Clearing
+106311,AXIS BANK SB - 26756 Clearing
+106312,Y1 AXIS BANK - 4787 Clearing
+106313,AXIS BANK - GOK - SB - 69154 Clearing
+106314,AXIS BANK - GOK DCS STAFF INCENTIVE - SB - 79354 Clearing
+106315,Y AXIS BANK (VBMPS-V) 918010095802030 Clearing
+106316,BANK OF BARODA SB - 0338 Clearing
+106317,Y1 BANK OF BARODA ST.JOHN NAGAR 0337 Clearing
+106318,Y BANK OF INDIA -Virgonagara (Camp) 0212 Clearing
+106319,Y CANARA BANK UTTARAHALLI ( Camp) - 0356 Clearing
+106320,CANARA BANK CA - 00001 Clearing
+106321,CANARA BANK-SANJEEVENI - NRLM - 1 - 05444 Clearing
+106322,Y BUBRRD COOP MPSU LTD VBMPS NDP 1 CANARA BANK 0038 Clearing
+106323,Y3 CANARA BANK - SB 5463 (VBMPS-3) Clearing
+106324,Y CANARA BANK - SB 6424 (NDP-1 RBP-2) Clearing
+106325,Y CANARA BANK - SB 6476 (VBMPS-IV NDP-1) Clearing
+106326,ICICI BANK CA - 00031 Clearing
+106327,KGB SOLUR (Camp) - 1907 Clearing
+106328,Y1 KGB BSK 0047 Clearing
+106329,Y2 STATE BANK OF INDIA - 0664 Clearing
+106330,Y1 STATE BANK OF INDIA - 0030 Clearing
+106331,SYNDICATE BANK - 00229 Clearing
+106332,SYNDICATE BANK CA - 00214 Clearing
+106333,Y3 SYNDICATE BANK - FD - NDP - 1 - 9740 Clearing
+106334,YES BANK SB - 00174 Clearing
+106335,AXIS BANK SB - 4560 Clearing
+106336,AXIS BANK (KMF ROTARY KAMADHENU) - 72227 Clearing
+106337,AXIS BANK OD 6502 Clearing
+106338,AXIS BANK OD 3704 Clearing
+106339,AXIS BANK OD 6768 Clearing
+106340,BANK OF BARODA SB - 33850 Clearing
+106341,AXIS BANK SB - 21559 Clearing
+106342,FreeCharge SMS Payment Clearing
+106343,AXIS BANK CA - 50450 Clearing
+200131,Share Capital
+200132,Share Suspense
+200133,Nominal Membership
+200231,Reserve Fund
+200232,Education Fund
+200233,Co-Op Publicity Fund
+200234,Building Fund
+200235,Research & Development Fund
+200236,Endowment Fund
+200237,Milk Producers Welfare Fund
+200238,Members Bonus Payable
+200239,Share Divdend Payable
+200321,Infrastructure Fund Utilisation
+200322,Building Fund Utilisation
+200323,Contribution From Mpcs -Infrastructure Levy
+200324,Infrastructure Fund Liability
+200325,Trade Fluctuation Fund
+200326,Ndp Corpus Fund
+200327,Step-Corpus Fund
+200328,Capital Reserve
+200421,Reserve For Bad & Doubtful Debts
+200422,Reserve For Non Moving Store Stock
+200423,Provision For Income Tax
+200531,Capital Grant In Aid Ndp-Rbp
+200532,Goi-Undp Grant For Cst Project (Ate Enterprises)
+200533,Goi-Undp Grant For Cst Project (Megawatt Solutions)
+200534,Goi-Undp Grant For Cst Project(Thermax Linited)
+200535,Gok - Indeginous Breed Proc & Mktg Grant
+200536,Grant In Aid From Kmf - Inaaf Tab
+200537,Grant In Aid From Kmf - Milko Scan
+200538,Grant In Aid From Npdd For Bmc
+200539,Integrated Cold Chain Project -Grant In Aid
+200540,Kmf Infrastructure Grant-Uht Plant
+200541,Ncdc Dmi Scheme Grant
+200542,Ndp-1 Fodder Development Grant
+200543,Rkvy Grant For Mobile Bmc
+200544,Vbmps Capital Grant For Union Assets
+200621,Nddb Loan Under Didf
+200622,Nddb Project A/C
+200671,Dcs Term Deposit
+200672,Dcs Term Deposit ( Non-Operative)
+200673,Interest Payable On Dcs Term Deposit
+200731,D.Halli Cf Misapropriation-Cr
+200702,Cattle Insurance Claims
+200703,Cattle Insurance Claims (Desi)
+200704,Dcs Losses
+200705,Incentive Payable To Mpcs Staff (Product Sale)
+200706,Milk Bill Stop Payment (Dcs)
+200707,Mpcs Staff Death/Retirement Benefit Fund
+200708,Mpcs Staff Incentive A/C
+200709,Scrs Milk Bill Payable To Mpcs
+200711,Scrs-Mpcs-Rationalisation Price
+200712,Scrs - Animal Lifting Travis
+200713,Scrs Camps (Cash Sales)
+200714,Scrs - Chaff Cutter
+200715,Scrs - Hydroponics (Fodder)
+200716,Scrs - Milking Machine
+200717,Scrs - Rubber Sheet For Cow
+200718,Scrs - Vbmps
+200719,Sundry Creditors Milk Purchase
+200811,Chamarajanagara Milk Union Ltd Liability
+200812,Dharwar Milk Union Liability
+200813,Gulbarga Milk Union Liability
+200814,Hassan Milk Union Ltd Liability
+200815,Kalaburgi-Bidar & Yadgir Milk Union Liabiliy
+200816,Kolar Milk Union Ltd Liability
+200817,Mandya Milk Union Ltd Liability
+200818,"Raichur,Ballari & Koppal Milk Union Ltd Liability"
+200819,Raichur-Bellary Milk Union (Kbs Old)
+200820,Shimoga Milk Union Ltd Liability
+200821,Tumkur Milk Union Ltd Liability
+200822,Vijayapura-Bagalkot Milk Union Liability
+200823,Belgaum Milk Union Liability
+200824,Chikkaballapura Milk Union Liability
+200825,Mysore Milk Union
+200826,Dakshina Kannaka Milk Union
+200827,Haveri Milk Union Liability
+200921,Kmf Kbs Wmp Advance
+200922,Central Training Institute Bangalore
+200923,Nandini Packaging Film Plant - Munnekolalu
+200924,Nandini Hi-Tech Product Plant-Crp
+200925,Nandini Sperm Station - Hesaraghatta
+200926,Nandini Milk Products Plant - Kmf Complex Bangalore
+200927,Nandini Hitech Mega Powder Plant-Ramanagara Liability
+201021,Bamul Vima Yojane
+201022,Bonus / Exgratia Payable
+201023,Burdcmps Members & Emploees Welfare Trust
+201024,C C Retailors (Payable)
+201025,Compensation Payable
+201026,Covid Incentive Payable
+201027,D T C Payable
+201028,E S I Contractors
+201029,Esicontribution Payable
+201030,Gratuity Premium Payable
+201031,Gratuity-Terminal Benifit
+201032,Gslis-Terminal Benifit
+201033,Gst Input Retention Money
+201034,Gst Rate Difference Payable (Flavoured Milk)
+201035,Incidental Charges Receivable From Insurance Co
+201036,Kmf Service Tax
+201037,Mstc Ltd - (Service Charge)
+201038,Out Standing Liabilities
+201039,Parlour Ground Rent Payable
+201040,Retention Money
+201041,Salary Disbursement
+201042,Statutory Audit Fee Payable
+201043,Vbmps Grant (Amcu Payable)
+201044,Vbmps Grant (Milk Can Payable)
+272115,AI Incentive Payable
+201121,Bank Loan Staff
+201122,Court Attachment Recovery
+201123,E P F Recovery
+201124,G S L I S
+201125,Life Insurance Recovery &Remmittance
+201126,Ppf/ Gpf Recovery
+201127,Pt Recovery
+201128,Staff Contribution On Compassion
+201129,V P F Recovery
+201130,C C Retaileres Balance(Salary Deduction)
+201321,Advance From Mpcs For Chaff Cutter (Kmf)
+201322,Advance From Mpcs For Cowmat (Kmf)
+201323,Dynamix Dairy (Old Balance)
+201324,Kanakapura Mega Dairy Project A/C
+201325,Sundry Creditors Purchase
+201326,Sundry Creditors Purchase-Kkp Dairy
+201421,Concessioners Addnl Sec.Deposit (10P)
+201422,Concessionery Security Deposit(Parlour)
+201423,Credit Customers Deposit
+201424,Earnest Money Deposit
+201425,Earnest Money Deposit (Unidentified)
+201426,Election Deposit
+201427,Quarters Deposit
+201428,Retailors Addnl Security Deposit (10 P)
+201429,Retailors Security Deposit (Br)
+201430,Security Deposit
+201431,Security Deposit - Employees
+201432,Tcd Retailors Addnl Sec Deposit (10 P)
+201433,Wsd Customers Security Deposit
+201521,"Kmf-Cattle Feed Plant, Arakalagudu"
+201522,"Kmf - Cattle Feed Plant, Dharwada"
+201523,"Kmf - Cattle Feed Plant, Gubbi"
+201524,Kmf- Cattle Feed Plant- K.R Pete
+201525,"Kmf - Cattle Feed Plant, Nakoda"
+201526,"Kmf - Cattle Feed Plant, Rajanakunte"
+201527,"Kmf - Cattle Feed Plant, Shikaripura"
+201651,AP Migration Clearing
+104760,KMF SALES DEPOT (KARNATAKA)
+104780,K.M.F & UNITS
+104850,INTER UNION DEBTORS
+104860,INTER UNION DEBTORS
+104900,SUNDRY DEBTORS(OTHERS)
+104910,SUNDRY DEBTORS(OTHERS)
+105000,BANK ACCOUNTS
+105010,CAMP BANK ACCOUNTS
+105020,CAMP BANK ACCOUNTS
+105200,TRANSACTION BANK ACCOUNTS
+105210,TRANSACTION BANK ACCOUNTS
+105300,COLLECTION BANK ACCOUNTS
+105310,COLLECTION BANK ACCOUNTS
+105400,SCHEMES BANK ACCOUNTS
+105410,SCHEMES BANK ACCOUNTS
+105500,WCL BANK ACCOUNTS
+105510,WCL BANK ACCOUNTS
+105600,OTHER BANK ACCOUNTS
+105610,OTHER BANK ACCOUNTS
+105700,BANK CLEARING ACCOUNTS
+105710,CAMP BANK CLEARING ACCOUNTS
+105720,CAMP BANK CLEARING ACCOUNTS
+105800,TRANSACTION BANK CLEARING ACCOUNTS
+105810,TRANSACTION BANK CLEARING ACCOUNTS
+105900,COLLECTION BANK CLEARING ACCOUNTS
+105910,COLLECTION BANK CLEARING ACCOUNTS
+106000,SCHEMES BANK CLEARING ACCOUNTS
+106100,SCHEMES BANK CLEARING ACCOUNTS
+106200,WCL BANK CLEARING ACCOUNTS
+106210,WCL BANK CLEARING ACCOUNTS
+106300,OTHER BANK CLEARING ACCOUNTS
+106310,OTHER BANK CLEARING ACCOUNTS
+TL,Total Liabilities
+200100,CAPITAL ACCOUNT
+200110,MEMBERS FUNDS
+200120,MEMBERS FUNDS
+200130,MEMBERS FUNDS
+200200,RESERVES & SURPLUS
+200210,GENERAL RESERVES
+200220,GENERAL RESERVES
+200230,GENERAL RESERVES
+300000,Other Reserves
+300100,Reserves Retained
+200300,OTHER FUNDS
+200310,OTHER FUNDS
+200320,OTHER FUNDS
+200400,PROVISION
+200410,PROVISION
+200420,PROVISION
+200500,GOK -GOI CAPITAL GRANTS
+200510,GOK -GOI CAPITAL GRANTS
+200520,GOK -GOI CAPITAL GRANTS
+200530,GOK -GOI CAPITAL GRANTS
+200600,SECURED LOANS
+200610,SECURED LOANS
+200620,SECURED LOANS
+200650,UNSECURED LOANS
+200660,UNSECURED LOANS
+200670,UNSECURED LOANS
+200700,CURRENT LIABILITIES
+200710,AUDIT OBJECTIONS CR
+200720,AUDIT OBJECTIONS CR
+200730,AUDIT OBJECTIONS CR
+200750,DCS DUES PAYABLE
+200760,DCS DUES PAYABLE
+200770,DCS DUES PAYABLE
+200800,INTER UNION - CREDITORS
+200810,INTER UNION - CREDITORS
+200900,KMF AND UNITS
+200910,KMF AND UNITS
+200920,KMF AND UNITS
+201000,OTHER - CREDITORS
+201010,OTHER - CREDITORS
+201020,OTHER - CREDITORS
+201100,SALARY RECOVERIES
+201110,SALARY RECOVERIES
+201120,SALARY RECOVERIES
+201200,DUTIES & TAXES
+201210,Taxes
+201220,Tax Liability Accounts
+201300,SUNDRY CREDITORS
+201310,SUNDRY CREDITORS
+201320,SUNDRY CREDITORS
+201400,DEPOSITS
+201410,DEPOSITS
+201420,DEPOSITS
+201500,SUNDRY CREDITORS- CATTLE FEED
+201510,SUNDRY CREDITORS- CATTLE FEED
+201520,SUNDRY CREDITORS- CATTLE FEED
+201600,ACCRUALS
+201610,Accruals
+201620,Accrual Accounts
+201650,Migration Clearing Accounts
+201700,S C H E M E S
+201710,S C H E M E S
+201720,S C H E M E S
+201730,S C H E M E S
+NP,Net Profit
+400200,SALE OF MILK & PRODUCTS
+400210,INTER-STATE SALES MILK PROD
+400220,I-S SALE OF MILK PRODUCTS
+400300,I-S SALE OF NMP PRODUCTS
+400350,LOCAL SALE OF MILK PRODUCTS
+400360,LOCAL SALES MILK PRODUCTS
+400400,SALE OF NMP PRODUCTS(LOCAL)
+400450,SALES P& I TRADING
+400460,LOCAL SALES P&I TRADING
+400470,LOCAL SALES P&I TRADING
+400550,SCRAP & OTHER MATERIALS
+400560,SALES OF SCRAP & OTHERS
+400570,SALES OF SCRAP & OTHERS
+400600,SERVICE TURNOVER
+400610,SERVICE TURNOVER
+400620,SERVICE TURNOVER
+400700,STORE MTRLS & RAW MATERIALS SALES
+400710,SALES STORE MATERIALS & RAW MATERIALS
+400720,LOCAL SALE OF STORE & RAW MATERIALS
+400800,OTHER INCOME
+400810,OTHER INCOME
+400815,OTHER INCOME
+400820,OTHER INCOME
+400900,P&I INCOME
+400910,P&I INCOME
+400920,P&I INCOME
+400950,INTEREST ON DEPOSITS & ADVANCES
+400960,INTEREST ON DEPOSITS & ADVANCES
+400970,INTEREST ON DEPOSITS & ADVANCES
+401000,SALE OF CANTEEN COUPONS
+401010,SALE OF CANTEEN COUPONS
+401020,SALE OF CANTEEN COUPONS
+401100,Revenue Accounts
+401110,Revenue Accounts
+401120,Revenue Accounts
+500010,Cost of Sales
+500020,Org Sale Cost
+500030,Cost of Sales
+500110,Direct Cost
+500120,Other Direct Costs
+500200,PURCHASE MILK & MILK PRODUCTS
+500210,LOCAL PURCHASE
+500220,LOCAL PUR OF MILK PRODUCTS
+500300,LOCAL PUR OF MILK
+500350,PURCHASE OF P&I ITEMS (MAIN GROUP)
+500360,PURCHASE P&I ITEMS (TRADING)
+500370,PURCHASE P&I ITEMS (TRADING)-EXEMPT
+500400,PURCHASE OF P&I ITEMS (TRADING) INTER-STATE
+500450,PURCHASE OF P&I ITEMS (TRADING) LOCAL
+500600,PURCHASE OF P& I ITEMS (NON TRADING)
+500610,PURCHASE OF P&I ITEMS (NON-TRADING) INTER-STATE
+500650,PURCHASE OF P&I ITEMS (NON-TRADING) LOCAL
+500700,PROCUREMENT TRANSPORTS
+500710,PROCUREMENT TRANSPORTS
+500720,PROCUREMENT TRANSPORTS
+500730,PROCUREMENT TRANSPORTS
+500800,PURCHASE STORES
+500810,CAPITAL GOODS
+500820,CAPITAL GOODS
+500830,CAPITAL GOODS
+500850,MECHANICAL STORE-IS
+500860,MECHANICAL STORE-IS
+500870,MECHANICAL STORE-IS
+500900,MECHANICAL STORE-LOCAL
+500910,MECHANICAL STORE-LOCAL
+500920,MECHANICAL STORE-LOCAL
+501000,STATIONARY/FURNITURE STORE-LOCAL
+501100,STATIONARY/FURNITURE STORE-LOCAL
+501110,STATIONARY/FURNITURE STORE-LOCAL
+501150,KANAKAPURA DAIRY
+501160,KANAKAPURA DAIRY-IS
+501170,KANAKAPURA DAIRY-IS
+501180,KANAKAPURA DAIRY-IS
+501250,KANAKAPURA DAIRY-LOCAL
+501260,KANAKAPURA DAIRY-LOCAL
+501270,KANAKAPURA DAIRY-LOCAL
+501350,P&I WING EXPENSES
+501360,P&I WING EXPENSES
+501370,P&I WING EXPENSES
+501380,P&I WING EXPENSES
+501500,STAFF EXPENSES
+501510,CANTEEN EXPENSES
+501520,CANTEEN EXPENSES
+501530,CANTEEN EXPENSES (BNG)
+501550,CANTEEN EXPENSES (HKT)
+501570,CANTEEN EXPENSES (KKP)
+501600,ADMINISTRATIVE EXPENSES
+501610,ADMINISTRATIVE EXPENSES
+501620,ADMINISTRATIVE EXPENSES
+501630,ADMINISTRATIVE EXPENSES
+501700,MANUFACTURING EXPENSES
+501710,MANUFACTURING EXPENSES
+501720,MANUFACTURING EXPENSES
+501730,MANUFACTURING EXPENSES
+501800,RATES & TAXES
+501810,RATES & TAXES
+501820,RATES & TAXES
+501830,RATES & TAXES
+501900,INTEREST & BANK CHARGES
+501910,INTEREST & BANK CHARGES
+501920,INTEREST & BANK CHARGES
+501930,INTEREST & BANK CHARGES
+501950,SELLING & DISTRIBUTION EXPENSES
+501960,SELLING & DISTRIBUTION EXPENSES
+501970,SELLING & DISTRIBUTION EXPENSES
+501980,SELLING & DISTRIBUTION EXPENSES
+502050,Other Expenses
+502060,Other Expenses
+502070,Other Expenses
+502080,Other Expenses
+502150,Transport Expenses
+502160,Transport Expenses
+502200,Depreciation Expenses
+502210,Depreciation Expenses
+502250,Provisions
+502260,Provisions
+201652,AR Migration Clearing
+201653,FA Migration Clearing
+201654,INV Migration Clearing
+201731,Gok Milk Purchase Subsidy
+201732,Gok Mpcs Staff Incentives Account
+201733,Gok Subsidy Return/Disbursement
+201734,Indigenous Breed Milk Proc. & Mktg Grant
+201735,Kmf Dcs Building Subsidy
+201736,Kmf- N R L M Phase 1
+201737,Kmf Rotary Kamadhenu
+201738,Kmf Sanjeevini
+201739,Kmf Sanjeevini 2019-20
+201740,Kmf Sanjeevini (2020-21)
+201741,Kmf Sanjeevini 2021-22
+201742,National Beekeeping & Honey Mission (Nbhm) Scheme
+201743,Nml-Feed & Fodder Scheme
+201744,Npdd Grant A/C
+201745,Nrlm Phase-2 8/101(First)
+201746,Nrlm Phase-2 8/72(Excess)
+201747,Nrlm Phase-3
+201748,Step Programme Vii
+201749,Village Based Milk Procurement System
+400221,I S Sale Of Butter
+400222,I S Sale Of Cheese
+400223,I S Sale Of Ghee
+400224,I S Sale Of Ghee Residue
+400225,I S Sale Of Butter Milk
+400226,I S Sale Of Curd
+400227,I S Sale Of H L L Milk Flexi
+400228,I S Sale Of Kala-Khand
+400229,I S Sale Of Khova
+400230,I S Sale Of Mysore Pak
+400231,I S Sale Of Paneer Burfi
+400232,I S Sale Of Paneer
+400233,I S Sale Of Peda
+400234,I S Sale Of Thrupti Milk Flexi
+400301,I S Sale Of Butter Milk-NMP
+400302,I S Sale Of Curd-NMP
+400303,I S Sale Of Milk (Bulk)-NMP
+400304,I S Sale Of Milk (Retail)-NMP
+400361,Sale Of Butter (Local)
+400362,Sale Of Cheese (Local)
+400363,Sale Of Flavoured Milk (L)
+400364,Sale Of Ghee (Local)
+400365,Sale Of Curd (Local)
+400366,Sale Of Kalakhand (Local)
+400367,Sale Of Khova (Local)
+400368,Sale Of Mysore Pak (Local)
+400369,Sale Of Paneer Burfi (Local)
+400370,Sale Of Paneer (Local)
+400371,Sale Of Peda (Local)
+400372,Sale Of Smp (Local)
+400373,Sale Of Smp Sweep (Local)
+400374,Sale Of Sweet Lassi (Local)
+400375,Sale Of Thrupti Milk Flexi (L)
+400376,Sale Of Vijaya Vajra Milk (Flexi Pack) (L)
+400377,Sale Of Whey Powder (Local)
+400378,Sale Of Wmp (Local)
+400379,Sale Of Fresh Cream (Local)
+400380,Sale Of Milk (Bulk-Local)
+400381,Sale Of Milk (Retail-Local)
+400382,Sale Of Raw Milk (Lsl)
+400401,Sale Of Nmp Products (Loc-Trd)-NMP
+400402,Sale Of Uht Milk (Gl) (Loc-Trd)-NMP
+400403,Sale Of Water (Packed) (L)-NMP
+400471,Sale Of Calf Starter
+400472,Sale Of Cattle Feed
+400473,Sale Of Fat Plus (Fs )
+400474,Sale Of Fodder Seeds
+400475,Sale Of Frozen Semen
+400476,Sale Of Goudhar Shakthi
+400477,Sale Of Min. Mixture
+400478,Sale Of Nutrisac (Fs)
+400479,Sale Of Samrudhi Feed Supplement
+400480,Sale Of A I Equipments (L)
+400481,Sale Of Alu Milk Cans (L)
+400482,Sale Of Chaff Cutter (L)
+400483,Sale Of Dcs Material-Consumable (L)
+400484,Sale Of Dcs Materials-Equipments (L)
+400485,Sale Of Hydroponic Unit (L)
+400486,Sale Of Milk Cans & Lids (L)
+400487,Sale Of Milking Machine (L)
+400488,Sale Of Solar Power Pack Accessr (L)
+400489,Sale Of S S Milk Cans (L)
+400490,Sale Of Vety Drugs (L)
+400491,Sale Of Animal Lifting Travis (L)
+400492,Sale Of Books & Registers(L)
+400493,Sale Of Elec. Weighg Scale (L)
+400494,Sale Of Liquid Nitrozen (L)
+400495,Sale Of Milk Analysers (Gen) (L)
+400496,Sale Of Rubber Sheet For Cow (L)
+400571,I S Sale Of Scrap
+400572,I S Sale Of Scum Waste Fat
+400573,Sale Of Scrap (Local)
+400574,Sale Of Bottle Coolers (Local)
+400575,Sale Of Ins. Ice Box (Local)
+400576,Sale Of Visi Coolers (Local)
+400577,Sale Of Uniform Cloth (Local)
+400621,Building Rent (Receipt)
+400622,Concessionary Fees -60
+400623,Freight Outward Revenue
+400624,Milk Transport
+400625,Parlour Rent - Receipt
+400626,Water Efflument Treatment
+400721,Sale Of Store Material (Local)
+400722,Sale Of Fuel & Lubricants (Local)
+400723,Sale Of Ldpe Pouch Film (Local)
+400724,Sale Of Packing Mtrls For Products (L)
+400725,Sale Of Raw Materials & Ingredients (L)
+400821,Agency & Renewal Fees
+400822,Application Fees
+400823,Contract Transfer Fee
+400824,Discounts/Rebate/Shortage/ Excess
+400825,F I N E S (Receipt)
+400826,Forfeiture Account
+400827,Interest On Income Tax Refund
+400828,Interest On Over Dues Of Ccr
+400829,Miscelenious Receipts
+400830,Quarters Rent
+400831,Recruitment Application Fee
+400832,Reprocessing Charges
+400833,Share Admission Fee
+400834,Share Application Fees
+400921,Emergency & Mvr Coupons
+400971,Interest On Bank Sb A/C
+400972,Interest On Fixed Deposit
+400973,Interest On Fixed Deposits - Co-Op Banks
+400974,Interest On Service Deposits & Others
+400975,Interest On Staff Advance
+401021,Sale Of Canteen Coupons (Knp Dairy) - Gst 5 %
+401022,Sale Of Canteen Coupons (Hkt Dairy) - Gst 5 %
+401023,Sale Of Canteen Coupons (Bng) - Gst 5%
+500221,L-Pur Nandini Aqua Water
+500222,L-Pur-Nmp Products
+500223,L-Pur-Uht Milk
+500301,L-Pur-Milk
+500302,Procurement Service Charges(KMF)
+500371,Pur-Fodder & Seeds
+500372,Pur-Mineral Mixture Feed Suppliment
+500401,PURCHASE OF P&I ITEMS (TRADING) I.S
+500402,Pur Of Dcs Mtrl-Chemicals (Trdg- I.S.)
+500403,Pur Of Dcs Mtrl-Equipments ( Trd-I.S)
+500404,Pur Of Milk Can & Lids (Trd- I.S)
+500405,Pur Of Rubber Mat For Cow (Trdg- I.S.)
+500406,Pur Of Nutri Sac (Trd - I.S.)
+500451,PURCHASE OF P&I ITEMS (TRADING) L
+500452,Pur Of Chaff Cutter (Trd-Local)
+500453,Pur Of Milking Machine ( Trd-Local)
+500454,Pur Of Dcs Material-Consumable (Is)
+500455,Pur Of Dcs Material-Stationary (L)
+500456,Pur Of Dcs Mtrl-Chemicals ( Trd-Local)
+500457,Pur Of Dcs Mtrl-Equipments ( Trd-Local)
+500458,Pur Of Liquid Nitrozen ( Trd-Local)
+500459,Pur Of Milk Analyser - Gen ( Trd-Local)
+500461,Pur Of Pet Strapping Met Clip ( Trd-Local)
+500462,Pur Of Pp/Pet Strapping Roll ( Trd-Local)
+500463,Pur Of Solar Power Pack ( Trd-Local)
+500464,Pur Of Calf Feed (Trd-Local)
+500465,Pur Of Cattle Feed (Trd-Local)
+500466,Pur Of Fodder & Seeds (Trd-Local)
+500467,Pur Of Frozen Semen Straw (Trd-Local)
+500468,Pur Of Godhar Shakthi (Trd-Local)
+500469,Pur Of Mineral Mixture (Trd-Local)
+500470,Pur Of Nutri Sac (Trd - Local)
+500471,Forex Gain/Loss
+500611,Pur Of Vety Drugs (Non-Trd) I.S
+500612,PURCHASE OF P&I ITEMS (NON-TRADING) I.S
+500651,PURCHASE OF P&I ITEMS (NON-TRADING) LOCAL
+500652,Pur Of Vety Drugs (Non-Trd) Local
+500653,L-Pur-Ai Surgicals & Equipments
+500731,Ptc To Contractors - Desi Cow Milk
+500831,Is-Pur Computers (Cap)
+500832,L-Pur Canteen Equip (Cap)
+500871,Is-Pur Industrial Saftey Items
+500872,Is-Pur Machinary (Cap)
+500873,Is-Pur Office Equipment (Cap)
+500921,L-Pur Industrial Saftey Items
+500922,L-Pur Machinary (Cap)
+500923,L-Pur-Mechanical Store
+500924,L-Pur Office Equipment (Cap)
+501111,L-Pur Furniture (Cap)
+501181,Kkp-Is-Purchase Of Transport Spares
+501182,Kkp-Is-Pur Computers
+501183,Kkp-Is-Pur Fuel Oil & Lubricants
+501184,Kkp-Is-Pur General & Con
+501185,Kkp-Is-Pur Laboratory Mat
+501186,Kkp-Is-Pur Mechanical Store
+501187,Kkp-Is-Pur Packing Mat
+501188,Kkp-Is-Pur Plant & Machinary (Cap)
+501189,Kkp-Is-Pur Raw Mat & Ingrediants
+501271,Kkp-L-Pur Canteen Utentials
+501272,Kkp-L-Pur Computer (Cap)
+501273,Kkp-L-Pur Fuel Oil & Lubricants
+501274,Kkp-L-Pur General & Con
+501275,Kkp-L-Pur Laboratory Equip
+501276,Kkp-L-Pur Laboratory Mat
+501277,Kkp-L-Pur Ldpe Films
+501278,Kkp-L-Pur Mechanical Store
+501279,Kkp-L-Pur Office Equip (Cap)
+501280,Kkp-L-Pur Packing Mat
+501281,Kkp-L-Pur Plant & Machinary (Cap)
+501282,Kkp-L-Pur Printing & Stationary
+501283,Is-Pur-Fuel Oil & Lubricants
+501284,Is-Pur-General & Con
+501285,Is-Pur-Ldpe Film-18%
+501286,Is-Pur-Mechanical Store
+501287,Is-Pur-Packing Materials
+501288,Is-Pur-Printing & Stationary
+501289,Is-Pur-Raw Mat & Ingrediants
+501290,L-Pur-Computer & Spares
+501291,L-Pur-Fuel Oil & Lubricants
+501292,L-Pur-General & Con
+501293,L-Pur-Ldpe Film
+501294,L-Pur-Packing Mat
+501295,L-Pur-Printing & Stationary
+501296,L-Pur-Raw Mat & Ingrediants
+501297,L-Pur-Transport Store
+501298,Hkt-Is-Pur-Fuel Oil & Lubricants
+501299,Hkt-L-Pur-Fuel Oil & Lubricants
+501381,Incidental Expense For Cattle Insurance
+501382,Ai Incentive Expenses
+501383,Bamul Contribution To Npdd Scheme
+501384,Calf Rally
+501385,Camp Office Expenses
+501386,Cattle Insurance Premium
+501387,Cmp Training Program Exp
+501388,Contribution For Kmf Sanjeevini
+501389,Dcs Building Subsidy
+501390,Dcs Land/Site Purchase Subsidy
+501391,"Feed ,Fodder & Other Freight Charges"
+501392,Fodder Development Exps
+501393,Foot & Mouth Vaccination - Exp
+501394,Indigenious Breed Project - Expenses
+501395,Ln2 Corpus Fund
+501396,Model Cow Shed Subsidy
+501397,Professional Charges-Vet.Doctors
+501398,Rajanukunte Farm Expenses
+501399,Regional Meeting Expenses
+501400,Rent (Camps)
+501401,Subsidy For Calf Feed/Calf Starter
+501402,Subsidy For Chaff Cutters
+501403,Subsidy For Chelated M.M.Sales
+501404,Subsidy For Dcs Material (Consumable)
+501405,Subsidy For Dcs Material (Equipments)
+501406,Subsidy For El.Weighing Scale (Gen)
+501407,Subsidy For Fat Plus (Fs)
+501408,Subsidy For Fodder Seeds Sales
+501409,Subsidy For Goudhar Shakti
+501410,Subsidy For Hydroponic Unit
+501411,Subsidy For Milk Analysers (Gen)
+501412,Subsidy For Milking Machine (Gen)
+501413,Subsidy For Nutricsac (Fs)
+501414,Subsidy For Rubber Sheets (Sales)
+501415,Subsidy For Samvriddhi Feed Suppl (Fs)
+501416,Subsidy For Semen Straw'S
+501417,Subsidy For Vety.Drugs
+501418,Training Of Dcs Personnel
+501531,Bng-L-Pur-Canteen Grocessories & Veg
+501551,Hkt-L-Pur-Canteen Grocessories & Veg
+501571,Kkp-L-Pur-Canteen Grocessories & Veg
+501572,Canteen Expenses-Kkp
+501573,Deputation Staff Cost
+501574,E D L I Premium
+501575,Employees Medical Insurance/In Patient Reimbursement
+501576,E P F Contribution
+501577,EPF Administrative Charges
+501578,Gratuity Premium
+501579,Leave Encashment (Regular)
+501580,Leave Encashment(Superannuation)
+501581,Medical Reimbursement Out Patient
+501582,Salary
+501583,Staff Welfare Expenses
+501584,Labour Welfare Fund Contribution
+501585,L-Pur-Uniform
+501631,Annual Maintenance Contract-General
+501632,Board Election Expenses
+501633,Board Meeting Expenses
+501634,Board Sitting Fee
+501635,Board Study Tour
+501636,Board T A - D A
+501637,Books & Periodicals
+501638,Compensation On Compassionate Grounds
+501639,Computer Maintenance Expenses
+501640,Ganesha Temple Trust -Bamul
+501641,Garden Maintenance
+501642,G B M Prizes
+501643,General Body Meeting
+501644,L-Pur-Office Exp
+501645,L-Pur-Office Function Exp
+501646,L-Pur Sports & Cultural Mat
+501647,L-Pur-Union Dispensory Drugs
+501648,Guest Cherges
+501649,Home Travel Concession
+501650,Honourorium To Nmpc Preist
+501651,Honourorium To President
+501652,Inauguration Expenses
+501653,Legal Expenses
+501654,Licence & Renewal Charges
+501655,National Festval & Pooja Expenses
+501656,Office Expenses
+501657,Office Meeting Expenses
+501658,Petrol & Diesel Expenses
+501659,Postage & Telegram Expenses
+501660,Pre Audit Fee
+501661,Printing & Stationary
+501662,Professional Service Fees
+501663,Recruitment Expenses
+501664,Repairs & Maintenance Of Building- General
+501665,Repairs To Office Equipment
+501666,Repairs To Others
+501667,Security Service Charges
+501668,Service Charge-Mstc (Expenses)
+501669,Sports And Cultural Expenses
+501670,Staff Training
+501671,Sub-Comittee Meeting Expenses
+501672,"Telephone , Internet & Mobile Tel.Charges"
+501673,Tender & Notification
+501674,Travelling & Conveyance
+501675,Vehicle (Car) Hire Charges- General
+501676,Property/Building Tax
+501731,Annual Maintainanace Contract- P&M
+501732,Bmc Maintainance
+501733,Butter Conversion Charges
+501301,KKP-PUR-FIREWOOD CHIPS

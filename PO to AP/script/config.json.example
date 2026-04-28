@@ -1,0 +1,68 @@
+{
+  "_comment": "Copy this file to config.json and fill in your values. config.json is git-ignored (contains credentials).",
+
+  "activeConnection": "directEbs",
+  "_comment_activeConnection": "Which connection profile to use. Must match a key in 'connections' below.",
+
+  "connections": {
+    "sshEbs": {
+      "_comment": "EBS via SSH tunnel",
+      "ssh": {
+        "enabled": true,
+        "host": "your-server-ip",
+        "port": 22,
+        "username": "opc",
+        "privateKeyPath": "./your-ssh-key.key"
+      },
+      "connection": {
+        "user": "APPS",
+        "password": "CHANGE_ME",
+        "connectString": "localhost:1521/SERVICE_NAME",
+        "oracleClientPath": "/opt/oracle/instantclient_21_14"
+      }
+    },
+    "directEbs": {
+      "_comment": "EBS via direct connection (no SSH)",
+      "ssh": {
+        "enabled": false
+      },
+      "connection": {
+        "user": "APPS",
+        "password": "CHANGE_ME",
+        "connectString": "your-db-host:1521/SERVICE_NAME",
+        "oracleClientPath": "/opt/oracle/instantclient_21_14"
+      }
+    }
+  },
+
+  "processA": {
+    "enabled": true,
+    "operatingUnit": null,
+    "dateFrom": null,
+    "dateTo": null,
+    "poNumber": null,
+    "debugMode": "Y",
+    "_comment_dates": "Format: DD-MON-YYYY (e.g. 01-JAN-2025). null = use rolling window (yesterday to today)."
+  },
+
+  "processB": {
+    "enabled": true,
+    "operatingUnit": null,
+    "dateFrom": null,
+    "dateTo": null,
+    "poNumber": null,
+    "debugMode": "Y",
+    "_comment_dates": "Format: DD-MON-YYYY. null = use same rolling window as Process A."
+  },
+
+  "purge": {
+    "enabled": true,
+    "daysToKeep": 90
+  },
+
+  "logging": {
+    "logDir": "./logs",
+    "retentionDays": 30,
+    "_comment": "Log files older than retentionDays are deleted on each run."
+  }
+}
