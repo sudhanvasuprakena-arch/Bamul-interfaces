@@ -1,0 +1,31 @@
+# ===========================================================================
+# PO-AP Interface Scheduler - Cron Configuration
+# ===========================================================================
+#
+# Add this entry to your crontab:   crontab -e
+# Remove it later with:             crontab -l | grep -v po_ap_interface | crontab -
+#
+# Format: minute hour day-of-month month day-of-week command
+#
+# IMPORTANT:
+#   - Update /path/to/Ebs/script to the actual absolute path
+#   - Ensure Oracle Instant Client path in config.json is correct
+#   - Ensure Node.js is in PATH (or use absolute path to node binary)
+#   - Test manually first:  cd /path/to/Ebs/script && node run_po_ap_interface.js
+#
+# ===========================================================================
+
+# Run PO-AP Interface daily at 2:00 AM server time
+0 2 * * * cd /path/to/Ebs/script && /usr/bin/node run_po_ap_interface.js >> /path/to/Ebs/script/logs/cron.log 2>&1
+
+# ---------------------------------------------------------------------------
+# Alternative schedules (uncomment one):
+# ---------------------------------------------------------------------------
+# Every 6 hours:
+# 0 */6 * * * cd /path/to/Ebs/script && /usr/bin/node run_po_ap_interface.js >> /path/to/Ebs/script/logs/cron.log 2>&1
+
+# Twice daily (2 AM and 2 PM):
+# 0 2,14 * * * cd /path/to/Ebs/script && /usr/bin/node run_po_ap_interface.js >> /path/to/Ebs/script/logs/cron.log 2>&1
+
+# Weekdays only at 3 AM:
+# 0 3 * * 1-5 cd /path/to/Ebs/script && /usr/bin/node run_po_ap_interface.js >> /path/to/Ebs/script/logs/cron.log 2>&1

@@ -1,0 +1,18 @@
+{
+  "name": "po-ap-interface-scheduler",
+  "version": "2.0.0",
+  "description": "Scheduled runner for XXCUST_PO_AP_INTERFACE_PKG — Receipt-to-Invoice (Process A) and RTV-to-Credit-Memo (Process B)",
+  "main": "run_po_ap_interface.js",
+  "scripts": {
+    "start": "node run_po_ap_interface.js",
+    "check": "node --check run_po_ap_interface.js"
+  },
+  "dependencies": {
+    "oracledb": "^6.7.0",
+    "ssh2": "^1.17.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "private": true
+}
