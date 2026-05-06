@@ -142,7 +142,7 @@ CREATE INDEX XXCUST_PO_AP_IFACE_LOG_N5 ON XXCUST_PO_AP_INTERFACE_LOG (legacy_ori
 */
 
 -- Custom COA Mapping Table (unchanged from v1.0)
-CREATE TABLE xxcust_coa_mapping (
+CREATE TABLE XXCUST_COA_MAPPING (
     mapping_id           NUMBER
         GENERATED ALWAYS AS IDENTITY
     PRIMARY KEY,
@@ -169,7 +169,7 @@ CREATE UNIQUE INDEX xxcust_coa_mapping_u1 ON
    SECTION 2: MAIN INTERFACE PACKAGE SPECIFICATION
    ============================================================================ */
 
-CREATE OR REPLACE PACKAGE xxcust_po_ap_interface_pkg AS
+CREATE OR REPLACE PACKAGE XXCUST_PO_AP_INTERFACE_PKG AS
 
     -- -------------------------------------------------------------------------
     -- PROCESS A: Receipt-to-Invoice (with RTV netting)
@@ -210,14 +210,14 @@ CREATE OR REPLACE PACKAGE xxcust_po_ap_interface_pkg AS
         p_days_to_keep IN NUMBER DEFAULT 90
     );
 
-END xxcust_po_ap_interface_pkg;
+END XXCUST_PO_AP_INTERFACE_PKG;
 /
 
 /* ============================================================================
    SECTION 3: MAIN INTERFACE PACKAGE BODY
    ============================================================================ */
 
-CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
+CREATE OR REPLACE PACKAGE BODY XXCUST_PO_AP_INTERFACE_PKG AS
 
     -- =========================================================================
     -- Package-level constants
@@ -253,7 +253,7 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
         p_message IN VARCHAR2
     ) IS
     BEGIN
-        dbms_output.put_line(to_char(sysdate, 'DD-MON-YYYY HH24:MI:SS')
+        DBMS_OUTPUT.PUT_LINE(TO_CHAR(SYSDATE, 'DD-MON-YYYY HH24:MI:SS')
                              || ' | '
                              || p_message);
         -- In full implementation: FND_FILE.PUT_LINE(FND_FILE.LOG, p_message);
@@ -276,7 +276,7 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
     --             legacy_ccid = p_legacy_ccid
     --         AND mapping_status = 'ACTIVE';
 
-    --     RETURN nvl(l_new_ccid, -1);
+    --     RETURN NVL(l_new_ccid, -1);
     -- EXCEPTION
     --     WHEN OTHERS THEN
     --         RETURN -1;
@@ -294,7 +294,7 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
         l_net_qty NUMBER;
     BEGIN
         SELECT
-            nvl(SUM(
+            NVL(SUM(
                 CASE
                     WHEN rt.transaction_type = 'RECEIVE'          THEN
                         rt.quantity
@@ -328,10 +328,10 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
         l_rtv_qty NUMBER;
     BEGIN
         SELECT
-            nvl(SUM(rt.quantity), 0)
+            NVL(SUM(rt.quantity), 0)
         INTO l_rtv_qty
         FROM
-            apps.rcv_transactions@legacy_instance rt
+            APPS.RCV_TRANSACTIONS@legacy_instance rt
         WHERE
                 rt.po_line_location_id = p_po_line_location_id
             AND rt.transaction_type = 'RETURN TO VENDOR'
@@ -364,8 +364,8 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
                 SELECT
                     log.invoice_num
                 FROM
-                         xxcust_po_ap_interface_log log
-                    JOIN apps.rcv_transactions@legacy_instance rt ON rt.transaction_id = log.legacy_rcv_transaction_id
+                         XXCUST_PO_AP_INTERFACE_LOG log
+                    JOIN apps.rcv_transactions@LEGACY_INSTANCE rt ON rt.transaction_id = log.legacy_rcv_transaction_id
                 WHERE
                         rt.po_line_location_id = p_po_line_location_id
                     AND log.legacy_po_header_id = p_po_header_id
@@ -379,7 +379,7 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
 
         RETURN l_invoice_num;
     EXCEPTION
-        WHEN no_data_found THEN
+        WHEN NO_DATA_FOUND THEN
             RETURN NULL;
         WHEN OTHERS THEN
             RETURN NULL;
@@ -405,11 +405,11 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
 
         -- BR-01: Net quantity or net amount must be positive after RTV netting
         IF
-            nvl(p_net_quantity, 0) <= 0
-            AND nvl(p_net_amount, 0) <= 0
+            NVL(p_net_quantity, 0) <= 0
+            AND NVL(p_net_amount, 0) <= 0
         THEN
             p_rejection_reason := 'Net received quantity/amount is zero or negative after RTV netting. No invoice required.';
-            RETURN false;
+            RETURN FALSE;
         END IF;
 
         -- BR-02: Supplier must exist in new AP instance
@@ -425,7 +425,7 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
             p_rejection_reason := 'Supplier ID '
                                   || p_vendor_id
                                   || ' not found in new AP. Migrate supplier first.';
-            RETURN false;
+            RETURN FALSE;
         END IF;
 
         -- BR-03: Duplicate check - receipt not already processed as an invoice
@@ -433,7 +433,7 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
             COUNT(*)
         INTO l_already_processed
         FROM
-            xxcust_po_ap_interface_log
+            XXCUST_PO_AP_INTERFACE_LOG
         WHERE
                 legacy_rcv_transaction_id = p_rcv_transaction_id
             AND interface_status = c_status_processed
@@ -443,7 +443,7 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
             p_rejection_reason := 'Receipt TXN ID '
                                   || p_rcv_transaction_id
                                   || ' already processed as invoice. Duplicate skipped.';
-            RETURN false;
+            RETURN FALSE;
         END IF;
 
         -- BR-04: COA mapping must exist for the distribution account
@@ -452,14 +452,14 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
         --     p_rejection_reason := 'No active COA mapping for legacy CCID '
         --                           || p_legacy_ccid
         --                           || '. Update XXCUST_COA_MAPPING.';
-        --     RETURN false;
+        --     RETURN FALSE;
         -- END IF;
 
-        RETURN true;
+        RETURN TRUE;
     EXCEPTION
         WHEN OTHERS THEN
             p_rejection_reason := 'Validation error: ' || sqlerrm;
-            RETURN false;
+            RETURN FALSE;
     END validate_receipt;
 
     -- =========================================================================
@@ -485,18 +485,18 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
 
         -- RTV-BR-01: RTV quantity must be positive
         IF
-            nvl(p_rtv_quantity, 0) <= 0
-            AND nvl(p_rtv_amount, 0) <= 0
+            NVL(p_rtv_quantity, 0) <= 0
+            AND NVL(p_rtv_amount, 0) <= 0
         THEN
             p_rejection_reason := 'RTV quantity/amount is zero or negative. Cannot create Credit Memo.';
-            RETURN false;
+            RETURN FALSE;
         END IF;
 
         -- RTV-BR-02: Original receipt must have been interfaced as an AP Invoice
         -- (Scenario A RTVs - where no invoice was ever created - are excluded upstream)
         IF p_original_invoice_num IS NULL THEN
             p_rejection_reason := 'No processed AP Invoice found for this PO line location. RTV handled by net quantity logic (Scenario A). Skipping.';
-            RETURN false;
+            RETURN FALSE;
         END IF;
 
         -- RTV-BR-03: Duplicate check - RTV not already processed as Credit Memo
@@ -504,7 +504,7 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
             COUNT(*)
         INTO l_already_processed
         FROM
-            xxcust_po_ap_interface_log
+            XXCUST_PO_AP_INTERFACE_LOG
         WHERE
                 legacy_rcv_transaction_id = p_rtv_transaction_id
             AND interface_status = c_status_processed
@@ -514,17 +514,17 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
             p_rejection_reason := 'RTV TXN ID '
                                   || p_rtv_transaction_id
                                   || ' already processed as Credit Memo. Duplicate skipped.';
-            RETURN false;
+            RETURN FALSE;
         END IF;
 
         -- RTV-BR-04: Credit amount must not exceed original invoice amount
-        IF nvl(p_rtv_amount, 0) > nvl(p_original_inv_amount, 0) THEN
+        IF NVL(p_rtv_amount, 0) > NVL(p_original_inv_amount, 0) THEN
             p_rejection_reason := 'RTV amount ('
                                   || p_rtv_amount
                                   || ') exceeds original invoice amount ('
                                   || p_original_inv_amount
                                   || '). Manual review required.';
-            RETURN false;
+            RETURN FALSE;
         END IF;
 
         -- RTV-BR-05: COA mapping must exist for the distribution account
@@ -534,14 +534,14 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
         --     p_rejection_reason := 'No active COA mapping for legacy CCID '
         --                           || p_legacy_ccid
         --                           || '. Update XXCUST_COA_MAPPING.';
-        --     RETURN false;
+        --     RETURN FALSE;
         -- END IF;
 
-        RETURN true;
+        RETURN TRUE;
     EXCEPTION
         WHEN OTHERS THEN
-            p_rejection_reason := 'RTV validation error: ' || sqlerrm;
-            RETURN false;
+            p_rejection_reason := 'RTV validation error: ' || SQLERRM;
+            RETURN FALSE;
     END validate_rtv;
 
     ---------------------------------------------------------------------------
@@ -878,7 +878,7 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
                                               || l_seg7_future1 || '.' || l_seg8_future2
                 );
 
-                IF nvl(l_new_ccid, 0) = 0 THEN
+                IF NVL(l_new_ccid, 0) = 0 THEN
                     log_message('FND_FLEX_EXT.GET_CCID failed: ' || fnd_flex_ext.get_message);
                     RETURN -1;
                 END IF;
@@ -922,6 +922,8 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
                 -- Receipt identifiers
             rsh.receipt_num                    receipt_number,
             rt.transaction_id                  rcv_transaction_id,
+            rt.shipment_header_id              shipment_header_id,
+            rt.shipment_line_id                shipment_line_id,
             rt.transaction_date                receipt_date,
             rt.po_line_location_id             po_line_location_id,
 
@@ -945,7 +947,7 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
                 -- This is the RTV Scenario A netting applied at cursor level
             (
                 SELECT
-                    nvl(SUM(
+                    NVL(SUM(
                         CASE
                             WHEN rt2.transaction_type = 'RECEIVE'          THEN
                                 rt2.quantity
@@ -966,7 +968,7 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
                 -- Total RTV qty for logging purposes
             (
                 SELECT
-                    nvl(SUM(rt3.quantity), 0)
+                    NVL(SUM(rt3.quantity), 0)
                 FROM
                     apps.rcv_transactions@legacy_instance rt3
                 WHERE
@@ -1016,13 +1018,13 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
             AND rt.source_document_code = 'PO'
 
                 -- Exclude fully billed lines
-            AND nvl(pod.quantity_billed, 0) < rt.quantity
+            -- AND NVL(pod.quantity_billed, 0) < rt.quantity
 
                 -- RTV NETTING (Scenario A): Exclude where net received qty <= 0
                 -- i.e. all goods have been returned before any invoice was created
             AND (
                 SELECT
-                    nvl(SUM(
+                    NVL(SUM(
                         CASE
                             WHEN rt2.transaction_type = 'RECEIVE'          THEN
                                 rt2.quantity
@@ -1084,7 +1086,7 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
     BEGIN
         p_retcode := 0;
         SELECT
-            ap_invoices_interface_s.NEXTVAL
+            AP_INVOICES_INTERFACE_S.NEXTVAL
         INTO l_group_id
         FROM
             dual;
@@ -1095,10 +1097,10 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
                     || l_run_id
                     || '  |  Group ID: '
                     || l_group_id);
-        log_message('Operating Unit  : ' || nvl(p_operating_unit, 'ALL'));
-        log_message('Receipt Date From: ' || nvl(p_receipt_date_from, 'NONE'));
-        log_message('Receipt Date To  : ' || nvl(p_receipt_date_to, 'NONE'));
-        log_message('PO Number Filter : ' || nvl(p_po_number, 'ALL'));
+        log_message('Operating Unit  : ' || NVL(p_operating_unit, 'ALL'));
+        log_message('Receipt Date From: ' || NVL(p_receipt_date_from, 'NONE'));
+        log_message('Receipt Date To  : ' || NVL(p_receipt_date_to, 'NONE'));
+        log_message('PO Number Filter : ' || NVL(p_po_number, 'ALL'));
         log_message('============================================================');
         FOR r IN c_receipts LOOP
             l_exc_rcv_transaction_id := r.rcv_transaction_id;
@@ -1167,7 +1169,7 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
                                     || ': is_valid='
                                     || CASE WHEN l_is_valid THEN 'TRUE' ELSE 'FALSE' END
                                     || ', rejection_reason='
-                                    || nvl(l_rejection_reason, 'NONE'));
+                                    || NVL(l_rejection_reason, 'NONE'));
                     END IF;
 
                 IF NOT l_is_valid THEN
@@ -1268,6 +1270,7 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
                     creation_date,
                     last_updated_by,
                     last_update_date,
+                    attribute5,
                     status
                 ) VALUES (
                     l_invoice_interface_id,
@@ -1307,6 +1310,7 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
                     sysdate,
                     c_created_by,
                     sysdate,
+                    r.po_number,
                     NULL
                 );
 
@@ -1330,7 +1334,8 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
                     created_by,
                     creation_date,
                     last_updated_by,
-                    last_update_date
+                    last_update_date,
+                    attribute5
                 ) VALUES (
                     l_invoice_interface_id,
                     l_line_interface_id,
@@ -1364,7 +1369,8 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
                     c_created_by,
                     sysdate,
                     c_created_by,
-                    sysdate
+                    sysdate,
+                    r.po_number
                 );
 
                 -- -------------------------------------------------------------
@@ -1379,13 +1385,13 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
                 FOR t IN (
                     SELECT jtl.tax_rate_code,
                            jtl.tax_rate_percentage,
-                           jtl.rounded_tax_amt_trx_curr   tax_amount,
-                           jtl.tax_line_num
+                           SUM(jtl.rounded_tax_amt_trx_curr)   tax_amount
                     FROM   ja.jai_tax_lines@legacy_instance jtl
                     WHERE  jtl.entity_code = 'RCV_TRANSACTION'
-                      AND  jtl.trx_id = r.rcv_transaction_id
+                      AND  jtl.trx_loc_line_id = r.rcv_transaction_id
                       AND  jtl.rounded_tax_amt_trx_curr > 0
-                    ORDER BY jtl.tax_line_num
+                    GROUP BY jtl.tax_rate_code, jtl.tax_rate_percentage
+                    ORDER BY jtl.tax_rate_code
                 ) LOOP
                     l_tax_line_count := l_tax_line_count + 1;
                     l_total_tax_amount := l_total_tax_amount + t.tax_amount;
@@ -1408,9 +1414,9 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
                         l_invoice_interface_id,
                         ap_invoice_lines_interface_s.NEXTVAL,
                         (r.po_line_num * 100) + l_tax_line_count,
-                        'TAX',
+                        'ITEM',
                         t.tax_amount,
-                        t.tax_rate_code || ' @' || t.tax_rate_percentage
+                        t.tax_rate_code || ' ' || t.tax_rate_percentage
                             || '% | Receipt# ' || r.receipt_number
                             || ' | PO Line: ' || r.po_line_num,
                         l_new_ccid,
@@ -1603,6 +1609,8 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
         SELECT
             rsh.receipt_num                    receipt_number,
             rt.transaction_id                  rtv_transaction_id,
+            rt.shipment_header_id              shipment_header_id,
+            rt.shipment_line_id                shipment_line_id,
             rt.transaction_date                rtv_date,
             rt.po_line_location_id             po_line_location_id,
             ph.po_header_id                    po_header_id,
@@ -1711,10 +1719,10 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
                     || l_run_id
                     || '  |  Group ID: '
                     || l_group_id);
-        log_message('Operating Unit : ' || nvl(p_operating_unit, 'ALL'));
-        log_message('RTV Date From  : ' || nvl(p_rtv_date_from, 'NONE'));
-        log_message('RTV Date To    : ' || nvl(p_rtv_date_to, 'NONE'));
-        log_message('PO Number      : ' || nvl(p_po_number, 'ALL'));
+        log_message('Operating Unit : ' || NVL(p_operating_unit, 'ALL'));
+        log_message('RTV Date From  : ' || NVL(p_rtv_date_from, 'NONE'));
+        log_message('RTV Date To    : ' || NVL(p_rtv_date_to, 'NONE'));
+        log_message('PO Number      : ' || NVL(p_po_number, 'ALL'));
         log_message('============================================================');
         FOR r IN c_rtvs LOOP
             l_exc_rtv_transaction_id := r.rtv_transaction_id;
@@ -1835,7 +1843,7 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
                                     || ': is_valid='
                                     || CASE WHEN l_is_valid THEN 'TRUE' ELSE 'FALSE' END
                                     || ', rejection_reason='
-                                    || nvl(l_rejection_reason, 'NONE'));
+                                    || NVL(l_rejection_reason, 'NONE'));
                     END IF;
 
                 IF NOT l_is_valid THEN
@@ -1900,7 +1908,7 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
                 -- -------------------------------------------------------------
                 -- LOAD: Credit Memo Header (invoice_type_lookup_code = CREDIT)
                 -- Note: Credit amounts are loaded as POSITIVE values.
-                -- Oracle AP handles the sign reversal for CREDIT type invoices.
+                -- For CREDIT type, invoice_amount must be NEGATIVE.
                 -- -------------------------------------------------------------
                 INSERT INTO ap_invoices_interface (
                     invoice_id,
@@ -1925,6 +1933,7 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
                     creation_date,
                     last_updated_by,
                     last_update_date,
+                    attribute5,
                     status
                 ) VALUES (
                     l_invoice_interface_id,
@@ -1933,7 +1942,7 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
                     trunc(sysdate),
                     r.vendor_id,
                     r.vendor_site_id,
-                    l_credit_amount,                            -- positive; AP reverses sign for CREDIT type
+                    -l_credit_amount,                           -- NEGATIVE for CREDIT type
                     r.po_currency,
                     r.conversion_rate,
                     'User',
@@ -1956,12 +1965,13 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
                     sysdate,
                     c_created_by,
                     sysdate,
+                    r.po_number,
                     NULL
                 );
 
                 -- -------------------------------------------------------------
                 -- LOAD: Credit Memo Line
-                -- line_type_lookup_code = ITEM, amount = positive (AP reverses)
+                -- line_type_lookup_code = ITEM, amount = NEGATIVE for CREDIT type
                 -- -------------------------------------------------------------
                 INSERT INTO ap_invoice_lines_interface (
                     invoice_id,
@@ -1980,13 +1990,14 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
                     created_by,
                     creation_date,
                     last_updated_by,
-                    last_update_date
+                    last_update_date,
+                    attribute5
                 ) VALUES (
                     l_invoice_interface_id,
                     l_line_interface_id,
                     r.po_line_num,
                     'ITEM',
-                    l_credit_amount,
+                    -l_credit_amount,
                         CASE
                             WHEN r.purchase_basis IN ( 'TEMP LABOR', 'FIXED PRICE' ) THEN
                                 NULL
@@ -2013,7 +2024,8 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
                     c_created_by,
                     sysdate,
                     c_created_by,
-                    sysdate
+                    sysdate,
+                    r.po_number
                 );
 
                 -- -------------------------------------------------------------
@@ -2027,13 +2039,13 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
                 FOR t IN (
                     SELECT jtl.tax_rate_code,
                            jtl.tax_rate_percentage,
-                           jtl.rounded_tax_amt_trx_curr   tax_amount,
-                           jtl.tax_line_num
+                           SUM(jtl.rounded_tax_amt_trx_curr)   tax_amount
                     FROM   ja.jai_tax_lines@legacy_instance jtl
                     WHERE  jtl.entity_code = 'RCV_TRANSACTION'
-                      AND  jtl.trx_id = r.rtv_transaction_id
+                      AND  jtl.trx_loc_line_id = r.rtv_transaction_id
                       AND  jtl.rounded_tax_amt_trx_curr > 0
-                    ORDER BY jtl.tax_line_num
+                    GROUP BY jtl.tax_rate_code, jtl.tax_rate_percentage
+                    ORDER BY jtl.tax_rate_code
                 ) LOOP
                     l_tax_line_count := l_tax_line_count + 1;
                     l_total_tax_amount := l_total_tax_amount + t.tax_amount;
@@ -2056,9 +2068,9 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
                         l_invoice_interface_id,
                         ap_invoice_lines_interface_s.NEXTVAL,
                         (r.po_line_num * 100) + l_tax_line_count,
-                        'TAX',
-                        t.tax_amount,
-                        'RTV ' || t.tax_rate_code || ' @' || t.tax_rate_percentage
+                        'ITEM',
+                        -t.tax_amount,
+                        'RTV ' || t.tax_rate_code || ' ' || t.tax_rate_percentage
                             || '% | Receipt# ' || r.receipt_number
                             || ' | PO Line: ' || r.po_line_num,
                         l_new_ccid,
@@ -2078,10 +2090,10 @@ CREATE OR REPLACE PACKAGE BODY xxcust_po_ap_interface_pkg AS
                     END IF;
                 END LOOP;
 
-                -- Update credit memo header amount to include tax
+                -- Update credit memo header amount to include tax (negative)
                 IF l_total_tax_amount > 0 THEN
                     UPDATE ap_invoices_interface
-                    SET    invoice_amount = invoice_amount + l_total_tax_amount
+                    SET    invoice_amount = invoice_amount - l_total_tax_amount
                     WHERE  invoice_id = l_invoice_interface_id;
 
                     l_credit_amount := l_credit_amount + l_total_tax_amount;
@@ -2341,13 +2353,13 @@ SELECT
     inv_log.legacy_po_line_num                                  po_line,
     inv_log.vendor_name,
     inv_log.receipt_quantity                                    gross_received_qty,
-    nvl(rtv_log.rtv_quantity, 0)                                total_rtv_qty,
-    ( inv_log.receipt_quantity - nvl(rtv_log.rtv_quantity, 0) ) net_qty,
+    NVL(rtv_log.rtv_quantity, 0)                                total_rtv_qty,
+    ( inv_log.receipt_quantity - NVL(rtv_log.rtv_quantity, 0) ) net_qty,
     inv_log.invoice_amount                                      invoice_amount,
-    nvl(rtv_log.invoice_amount, 0)                              credit_memo_amount,
-    ( inv_log.invoice_amount - nvl(rtv_log.invoice_amount, 0) ) net_ap_balance,
+    NVL(rtv_log.invoice_amount, 0)                              credit_memo_amount,
+    ( inv_log.invoice_amount - NVL(rtv_log.invoice_amount, 0) ) net_ap_balance,
     CASE
-        WHEN abs((inv_log.invoice_amount - nvl(rtv_log.invoice_amount, 0)) -((inv_log.receipt_quantity - nvl(rtv_log.rtv_quantity, 0)) *
+        WHEN abs((inv_log.invoice_amount - NVL(rtv_log.invoice_amount, 0)) -((inv_log.receipt_quantity - NVL(rtv_log.rtv_quantity, 0)) *
         inv_log.invoice_amount / nullif(inv_log.receipt_quantity, 0))) < 0.01 THEN
             'BALANCED'
         ELSE
@@ -2494,5 +2506,8 @@ ORDER BY
 
 -- BLANKET PO
     -- header id 6716988
-    -- segment1 6258548
+    -- segment1 DELIVER
 
+-- group_id = 8005
+
+-- "poNumber": 1495474
