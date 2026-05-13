@@ -165,6 +165,47 @@ CREATE UNIQUE INDEX xxcust_coa_mapping_u1 ON
         legacy_ccid
     );
 
+-- Transportation Invoice Staging Table (Process C)
+-- Loaded from monthly billing CSV before running Process C.
+CREATE TABLE xxcust_transport_invoice_stg (
+    stg_id                    NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    batch_id                  VARCHAR2(50),
+    operating_unit            VARCHAR2(240),
+    vendor_code               VARCHAR2(30)   NOT NULL,
+    vendor_name               VARCHAR2(240),
+    payment_group             VARCHAR2(100),
+    vendor_site_code          VARCHAR2(240)  NOT NULL,
+    invoice_num               VARCHAR2(50)   NOT NULL,
+    invoice_date_from         DATE,
+    invoice_date_to           DATE,
+    invoice_type              VARCHAR2(25)   NOT NULL,  -- STANDARD, DEBIT
+    description               VARCHAR2(2000),
+    invoice_amount            NUMBER         NOT NULL,
+    po_number                 VARCHAR2(20),
+    basic_amount              NUMBER,
+    gst_tax_amount            NUMBER,
+    gst_applicable_flag       VARCHAR2(3)    DEFAULT 'YES',
+    gst_tax_rate              VARCHAR2(20),  -- e.g. '18%', 'RCM'
+    tds_section               VARCHAR2(50),  -- e.g. '194 C -1 %'
+    tds_amount                NUMBER,
+    liability_account         VARCHAR2(25),
+    payment_terms             VARCHAR2(50),
+    pay_group                 VARCHAR2(25),
+    remarks                   VARCHAR2(2000),
+    -- Processing columns
+    process_status            VARCHAR2(20)   DEFAULT 'NEW',  -- NEW, PROCESSED, REJECTED, ERROR
+    process_message           VARCHAR2(2000),
+    run_id                    VARCHAR2(50),
+    created_by                NUMBER DEFAULT -1,
+    creation_date             DATE DEFAULT SYSDATE,
+    last_updated_by           NUMBER DEFAULT -1,
+    last_update_date          DATE DEFAULT SYSDATE
+);
+
+CREATE INDEX xxcust_transport_stg_n1 ON xxcust_transport_invoice_stg (batch_id);
+CREATE INDEX xxcust_transport_stg_n2 ON xxcust_transport_invoice_stg (process_status);
+CREATE INDEX xxcust_transport_stg_n3 ON xxcust_transport_invoice_stg (vendor_code, po_number);
+
 /* ============================================================================
    SECTION 2: MAIN INTERFACE PACKAGE SPECIFICATION
    ============================================================================ */
@@ -205,68 +246,23 @@ CREATE OR REPLACE PACKAGE XXCUST_PO_AP_INTERFACE_PKG AS
         p_debug_mode     IN VARCHAR2 DEFAULT 'N'
     );
 
-    -- -------------------------------------------------------------------------
-    -- PROCESS C: Transport Billing Interface (called from old EBS via DB link)
-    -- Old EBS pushes invoice header/line data after inserting into its own
-    -- interface tables. These procedures map vendor and CCID then insert
-    -- into the new instance's AP interface tables.
-    -- -------------------------------------------------------------------------
-    PROCEDURE insert_transport_invoice (
-        p_invoice_id                IN NUMBER,
-        p_invoice_num               IN VARCHAR2,
-        p_vendor_id                 IN NUMBER,      -- legacy vendor_id
-        p_vendor_site_id            IN NUMBER,      -- legacy vendor_site_id
-        p_invoice_amount            IN NUMBER,
-        p_invoice_currency_code     IN VARCHAR2,
-        p_invoice_date              IN DATE,
-        p_terms_date                IN DATE,
-        p_terms_id                  IN NUMBER,
-        p_description               IN VARCHAR2,
-        p_source                    IN VARCHAR2,
-        p_org_id                    IN NUMBER,      -- legacy org_id (148)
-        p_payment_method_code       IN VARCHAR2,
-        p_invoice_type_lookup_code  IN VARCHAR2,
-        p_attribute2                IN VARCHAR2,    -- reporting_month || reporting_period
-        p_vendor_number             IN VARCHAR2,    -- legacy vendor segment1 for mapping
-        p_vendor_site_code          IN VARCHAR2,    -- legacy vendor site code for mapping
-        x_new_invoice_id            OUT NUMBER,
-        x_return_status             OUT VARCHAR2,
-        x_return_msg                OUT VARCHAR2
-    );
-
-    PROCEDURE insert_transport_inv_line (
-        p_new_invoice_id            IN NUMBER,      -- returned from insert_transport_invoice
-        p_line_number               IN NUMBER,
-        p_line_type_lookup_code     IN VARCHAR2,
-        p_amount                    IN NUMBER,
-        p_description               IN VARCHAR2,
-        p_inventory_item_id         IN NUMBER,
-        p_dist_code_combination_id  IN NUMBER,      -- legacy CCID
-        p_reference_1               IN VARCHAR2,
-        p_reference_2               IN VARCHAR2,
-        p_legacy_segment2           IN VARCHAR2,    -- legacy gcc.segment2 (costcenter/department)
-        p_legacy_segment4           IN VARCHAR2,    -- legacy gcc.segment4 (account)
-        x_return_status             OUT VARCHAR2,
-        x_return_msg                OUT VARCHAR2
-    );
-
-    -- -------------------------------------------------------------------------
-    -- PROCESS D: Submit AP Open Interface Import
-    -- Submits the Payables Open Interface Import concurrent program
-    -- (APXIIMPT) to create AP invoices from the interface tables.
-    -- Called from old EBS (XXBML_TPT_PROCESS_PKG) via DB link after
-    -- call_api completes and transport invoice data has been loaded.
-    -- -------------------------------------------------------------------------
-    PROCEDURE run_ap_import (
-        p_source         IN VARCHAR2 DEFAULT 'TRANSPORT',
-        x_request_id     OUT NUMBER,
-        x_return_status  OUT VARCHAR2,
-        x_return_msg     OUT VARCHAR2
-    );
-
     -- Purge successfully processed log records older than N days
     PROCEDURE purge_log (
         p_days_to_keep IN NUMBER DEFAULT 90
+    );
+
+    -- -------------------------------------------------------------------------
+    -- PROCESS C: Transportation Invoice (No Receipt)
+    -- Entry point for creating AP Invoices and Debit Memos from transportation
+    -- POs (UOM = Trip) that have no receipts. Reads from staging table
+    -- XXCUST_TRANSPORT_INVOICE_STG populated from monthly billing CSV.
+    -- Supports STANDARD invoices and DEBIT memos (for deductions/fines).
+    -- -------------------------------------------------------------------------
+    PROCEDURE run_transport_interface (
+        p_errbuf         OUT VARCHAR2,
+        p_retcode        OUT NUMBER,
+        p_batch_id       IN VARCHAR2 DEFAULT NULL,   -- NULL = all NEW records
+        p_debug_mode     IN VARCHAR2 DEFAULT 'N'
     );
 
 END XXCUST_PO_AP_INTERFACE_PKG;
@@ -292,7 +288,6 @@ CREATE OR REPLACE PACKAGE BODY XXCUST_PO_AP_INTERFACE_PKG AS
     -- Transaction class constants (for log table)
     c_class_invoice     CONSTANT VARCHAR2(20) := 'INVOICE';
     c_class_credit_memo CONSTANT VARCHAR2(20) := 'CREDIT_MEMO';
-    c_class_transport   CONSTANT VARCHAR2(20) := 'TRANSPORT';
 
     -- Status constants
     c_status_processed  CONSTANT VARCHAR2(20) := 'PROCESSED';
@@ -451,7 +446,7 @@ CREATE OR REPLACE PACKAGE BODY XXCUST_PO_AP_INTERFACE_PKG AS
     -- =========================================================================
     FUNCTION validate_receipt (
         p_rcv_transaction_id IN NUMBER,
-        p_vendor_number      IN VARCHAR2,
+        p_vendor_id          IN NUMBER,
         p_net_quantity       IN NUMBER,
         p_net_amount         IN NUMBER,
         p_legacy_ccid        IN NUMBER,
@@ -472,19 +467,19 @@ CREATE OR REPLACE PACKAGE BODY XXCUST_PO_AP_INTERFACE_PKG AS
             RETURN FALSE;
         END IF;
 
-        -- BR-02: Supplier must exist in new AP instance (match by vendor number / segment1)
+        -- BR-02: Supplier must exist in new AP instance
         SELECT
             COUNT(*)
         INTO l_vendor_count
         FROM
             APPS.AP_SUPPLIERS
         WHERE
-            segment1 = p_vendor_number;
+            vendor_id = p_vendor_id;
 
         IF l_vendor_count = 0 THEN
-            p_rejection_reason := 'Supplier (vendor_number='
-                                  || p_vendor_number
-                                  || ') not found in new AP. Migrate supplier first.';
+            p_rejection_reason := 'Supplier ID '
+                                  || p_vendor_id
+                                  || ' not found in new AP. Migrate supplier first.';
             RETURN FALSE;
         END IF;
 
@@ -1048,7 +1043,6 @@ CREATE OR REPLACE PACKAGE BODY XXCUST_PO_AP_INTERFACE_PKG AS
                 -- Supplier
             ph.vendor_id                       vendor_id,
             ph.vendor_site_id                  vendor_site_id,
-            aps.segment1                       vendor_number,
             aps.vendor_name                    vendor_name,
             apss.vendor_site_code              vendor_site_code,
 
@@ -1135,8 +1129,6 @@ CREATE OR REPLACE PACKAGE BODY XXCUST_PO_AP_INTERFACE_PKG AS
         l_total_tax_amount       NUMBER;
         l_tax_line_count         NUMBER;
         l_error_message          VARCHAR2(2000);
-        l_new_vendor_id          NUMBER;
-        l_new_vendor_site_id     NUMBER;
         -- Local copies of cursor fields for use in EXCEPTION handler
         l_exc_rcv_transaction_id NUMBER;
         l_exc_po_header_id       NUMBER;
@@ -1207,33 +1199,6 @@ CREATE OR REPLACE PACKAGE BODY XXCUST_PO_AP_INTERFACE_PKG AS
                 END IF;
 
                 -- -------------------------------------------------------------
-                -- RESOLVE: Map legacy vendor to new AP vendor by vendor_number (segment1)
-                -- -------------------------------------------------------------
-                BEGIN
-                    SELECT vendor_id
-                    INTO   l_new_vendor_id
-                    FROM   ap_suppliers
-                    WHERE  segment1 = r.vendor_number
-                      AND  ROWNUM = 1;
-                EXCEPTION
-                    WHEN NO_DATA_FOUND THEN
-                        l_new_vendor_id := NULL;
-                END;
-
-                BEGIN
-                    SELECT vendor_site_id
-                    INTO   l_new_vendor_site_id
-                    FROM   ap_supplier_sites_all
-                    WHERE  vendor_id = l_new_vendor_id
-                      AND  vendor_site_code = r.vendor_site_code
-                      AND  org_id = c_new_org_id
-                      AND  ROWNUM = 1;
-                EXCEPTION
-                    WHEN NO_DATA_FOUND THEN
-                        l_new_vendor_site_id := NULL;
-                END;
-
-                -- -------------------------------------------------------------
                 -- VALIDATE
                 -- -------------------------------------------------------------
                 l_new_ccid := derive_new_ccid(p_legacy_ccid => r.legacy_ccid, p_inventory_org_id => r.inventory_org_id, p_inventory_item_id =>
@@ -1248,7 +1213,7 @@ CREATE OR REPLACE PACKAGE BODY XXCUST_PO_AP_INTERFACE_PKG AS
                 log_message('New CCID for PO#' || r.po_number || ' Line:' || r.po_line_num
                             || ' legacy_ccid=' || r.legacy_ccid || ' → new_ccid=' || l_new_ccid);
 
-                l_is_valid := validate_receipt(p_rcv_transaction_id => r.rcv_transaction_id, p_vendor_number => r.vendor_number, p_net_quantity =>
+                l_is_valid := validate_receipt(p_rcv_transaction_id => r.rcv_transaction_id, p_vendor_id => r.vendor_id, p_net_quantity =>
                 r.net_qty_received, p_net_amount => l_net_invoice_amount, p_legacy_ccid => r.legacy_ccid,
                                               p_rejection_reason => l_rejection_reason);
 
@@ -1367,8 +1332,8 @@ CREATE OR REPLACE PACKAGE BODY XXCUST_PO_AP_INTERFACE_PKG AS
                     l_invoice_num,
                     c_invoice_type,
                     trunc(sysdate),
-                    l_new_vendor_id,
-                    l_new_vendor_site_id,
+                    r.vendor_id,
+                    r.vendor_site_id,
                     l_net_invoice_amount,
                     r.po_currency,
                     r.conversion_rate,
@@ -1724,9 +1689,7 @@ CREATE OR REPLACE PACKAGE BODY XXCUST_PO_AP_INTERFACE_PKG AS
             rt.currency_conversion_rate        conversion_rate,
             ph.vendor_id                       vendor_id,
             ph.vendor_site_id                  vendor_site_id,
-            aps.segment1                       vendor_number,
             aps.vendor_name                    vendor_name,
-            apss.vendor_site_code              vendor_site_code,
             pod.code_combination_id            legacy_ccid,
             ph.org_id                          org_id,
             rt.organization_id                 inventory_org_id, -- this is used in mapping division in COA mapping
@@ -1788,8 +1751,6 @@ CREATE OR REPLACE PACKAGE BODY XXCUST_PO_AP_INTERFACE_PKG AS
         l_total_tax_amount       NUMBER;
         l_tax_line_count         NUMBER;
         l_error_message          VARCHAR2(2000);
-        l_new_vendor_id          NUMBER;
-        l_new_vendor_site_id     NUMBER;
         -- Local copies of cursor fields for use in EXCEPTION handler
         l_exc_rtv_transaction_id NUMBER;
         l_exc_po_header_id       NUMBER;
@@ -1881,33 +1842,6 @@ CREATE OR REPLACE PACKAGE BODY XXCUST_PO_AP_INTERFACE_PKG AS
                 END IF;
 
                 -- -------------------------------------------------------------
-                -- RESOLVE: Map legacy vendor to new AP vendor by vendor_number (segment1)
-                -- -------------------------------------------------------------
-                BEGIN
-                    SELECT vendor_id
-                    INTO   l_new_vendor_id
-                    FROM   ap_suppliers
-                    WHERE  segment1 = r.vendor_number
-                      AND  ROWNUM = 1;
-                EXCEPTION
-                    WHEN NO_DATA_FOUND THEN
-                        l_new_vendor_id := NULL;
-                END;
-
-                BEGIN
-                    SELECT vendor_site_id
-                    INTO   l_new_vendor_site_id
-                    FROM   ap_supplier_sites_all
-                    WHERE  vendor_id = l_new_vendor_id
-                      AND  vendor_site_code = r.vendor_site_code
-                      AND  org_id = c_new_org_id
-                      AND  ROWNUM = 1;
-                EXCEPTION
-                    WHEN NO_DATA_FOUND THEN
-                        l_new_vendor_site_id := NULL;
-                END;
-
-                -- -------------------------------------------------------------
                 -- STEP 2: Get original invoice amount for over-credit check
                 -- -------------------------------------------------------------
                 BEGIN
@@ -1918,7 +1852,7 @@ CREATE OR REPLACE PACKAGE BODY XXCUST_PO_AP_INTERFACE_PKG AS
                         ap_invoices_all
                     WHERE
                             invoice_num = l_original_invoice_num
-                        AND vendor_id = l_new_vendor_id
+                        AND vendor_id = r.vendor_id
                         AND ROWNUM = 1;
 
                 EXCEPTION
@@ -2061,8 +1995,8 @@ CREATE OR REPLACE PACKAGE BODY XXCUST_PO_AP_INTERFACE_PKG AS
                     l_credit_memo_num,
                     c_credit_type,                              -- CREDIT type = Credit Memo
                     trunc(sysdate),
-                    l_new_vendor_id,
-                    l_new_vendor_site_id,
+                    r.vendor_id,
+                    r.vendor_site_id,
                     -l_credit_amount,                           -- NEGATIVE for CREDIT type
                     r.po_currency,
                     r.conversion_rate,
@@ -2346,493 +2280,407 @@ CREATE OR REPLACE PACKAGE BODY XXCUST_PO_AP_INTERFACE_PKG AS
     END run_rtv_interface;
 
     /* =========================================================================
-       PROCESS C: Transport Invoice Header Insert
-       Called from old EBS via DB link after ap_invoices_interface_insert.
-       Maps vendor_id and vendor_site_id to new instance, then inserts
-       into local ap_invoices_interface.
+       PROCESS C: run_transport_interface
+       Transportation Invoice Interface (No Receipt Required)
+
+       Handles transportation POs (Blanket, UOM=Trip) that bypass the receiving
+       process. Monthly billing data is loaded into XXCUST_TRANSPORT_INVOICE_STG
+       from CSV, and this procedure creates AP Invoices / Debit Memos directly
+       in the AP Open Interface without any receipt or PO matching.
+
+       Invoice Types Supported:
+       - STANDARD  : Regular transportation service invoice
+       - DEBIT     : Deductions (crate shortage, km difference, vehicle change, fines)
+
+       Key Differences from Process A:
+       - No rcv_transaction_id (no receipt)
+       - No PO matching in new EBS (PO number stored in attribute5 for reference)
+       - Tax: RCM (Reverse Charge Mechanism) - handled via tax_related_invoice_id or tax config
+       - TDS: 194C @ 1% (transport contracts)
+       - Source data: staging table, not legacy RCV_TRANSACTIONS
        ========================================================================= */
-    PROCEDURE insert_transport_invoice (
-        p_invoice_id                IN NUMBER,
-        p_invoice_num               IN VARCHAR2,
-        p_vendor_id                 IN NUMBER,
-        p_vendor_site_id            IN NUMBER,
-        p_invoice_amount            IN NUMBER,
-        p_invoice_currency_code     IN VARCHAR2,
-        p_invoice_date              IN DATE,
-        p_terms_date                IN DATE,
-        p_terms_id                  IN NUMBER,
-        p_description               IN VARCHAR2,
-        p_source                    IN VARCHAR2,
-        p_org_id                    IN NUMBER,
-        p_payment_method_code       IN VARCHAR2,
-        p_invoice_type_lookup_code  IN VARCHAR2,
-        p_attribute2                IN VARCHAR2,
-        p_vendor_number             IN VARCHAR2,
-        p_vendor_site_code          IN VARCHAR2,
-        x_new_invoice_id            OUT NUMBER,
-        x_return_status             OUT VARCHAR2,
-        x_return_msg                OUT VARCHAR2
+    PROCEDURE run_transport_interface (
+        p_errbuf         OUT VARCHAR2,
+        p_retcode        OUT NUMBER,
+        p_batch_id       IN VARCHAR2 DEFAULT NULL,
+        p_debug_mode     IN VARCHAR2 DEFAULT 'N'
     ) IS
-        l_new_vendor_id       NUMBER;
-        l_new_vendor_site_id  NUMBER;
-        l_new_invoice_id      NUMBER;
+
+        CURSOR c_transport IS
+        SELECT stg.*
+        FROM   xxcust_transport_invoice_stg stg
+        WHERE  stg.process_status = 'NEW'
+          AND  (p_batch_id IS NULL OR stg.batch_id = p_batch_id)
+        ORDER BY stg.vendor_code, stg.po_number, stg.stg_id;
+
+        -- Local variables
+        l_run_id                 VARCHAR2(50) := 'TPT-' || TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS');
+        l_group_id               NUMBER;
+        l_invoice_num            VARCHAR2(50);
+        l_invoice_type           VARCHAR2(25);
+        l_vendor_id              NUMBER;
+        l_vendor_site_id         NUMBER;
+        l_invoice_interface_id   NUMBER;
+        l_line_interface_id      NUMBER;
+        l_invoice_amount         NUMBER;
+        l_invoice_date           DATE;
+        l_liability_ccid         NUMBER;
+        l_rejection_reason       VARCHAR2(2000);
+        l_records_processed      NUMBER := 0;
+        l_records_rejected       NUMBER := 0;
+        l_records_errored        NUMBER := 0;
+        l_error_message          VARCHAR2(2000);
+        l_terms_id               NUMBER;
+
     BEGIN
-        x_return_status := 'S';
-        x_return_msg := NULL;
+        p_retcode := 0;
+        SELECT AP_INVOICES_INTERFACE_S.NEXTVAL INTO l_group_id FROM dual;
 
-        log_message('PROCESS C: insert_transport_invoice START — invoice_num=' || p_invoice_num);
+        log_message('============================================================');
+        log_message('PROCESS C: Transportation Invoice Interface (No Receipt)');
+        log_message('Run ID: ' || l_run_id || '  |  Group ID: ' || l_group_id);
+        log_message('Batch ID: ' || NVL(p_batch_id, 'ALL NEW'));
+        log_message('============================================================');
 
-        -- Map vendor by segment1 (vendor_number)
-        BEGIN
-            SELECT vendor_id
-            INTO   l_new_vendor_id
-            FROM   ap_suppliers
-            WHERE  segment1 = p_vendor_number
-              AND  ROWNUM = 1;
-        EXCEPTION
-            WHEN NO_DATA_FOUND THEN
-                x_return_status := 'E';
-                x_return_msg := 'Supplier (vendor_number=' || p_vendor_number
-                                || ') not found in new AP. Migrate supplier first.';
-                log_message(x_return_msg);
-                RETURN;
-        END;
+        FOR r IN c_transport LOOP
+            BEGIN
+                l_rejection_reason := NULL;
 
-        -- Map vendor site
-        BEGIN
-            SELECT vendor_site_id
-            INTO   l_new_vendor_site_id
-            FROM   ap_supplier_sites_all
-            WHERE  vendor_id = l_new_vendor_id
-              AND  vendor_site_code = p_vendor_site_code
-              AND  org_id = c_new_org_id
-              AND  ROWNUM = 1;
-        EXCEPTION
-            WHEN NO_DATA_FOUND THEN
-                -- Fallback: first available site for this vendor in new org
+                -- ---------------------------------------------------------
+                -- STEP 1: Resolve vendor_id from vendor_code (segment1)
+                -- ---------------------------------------------------------
+                BEGIN
+                    SELECT vendor_id
+                    INTO   l_vendor_id
+                    FROM   ap_suppliers
+                    WHERE  segment1 = r.vendor_code
+                      AND  ROWNUM = 1;
+                EXCEPTION
+                    WHEN NO_DATA_FOUND THEN
+                        l_rejection_reason := 'Vendor code ' || r.vendor_code
+                                              || ' not found in new AP. Migrate supplier first.';
+                        RAISE_APPLICATION_ERROR(-20001, l_rejection_reason);
+                END;
+
+                -- ---------------------------------------------------------
+                -- STEP 2: Resolve vendor_site_id
+                -- ---------------------------------------------------------
                 BEGIN
                     SELECT vendor_site_id
-                    INTO   l_new_vendor_site_id
+                    INTO   l_vendor_site_id
                     FROM   ap_supplier_sites_all
-                    WHERE  vendor_id = l_new_vendor_id
+                    WHERE  vendor_id = l_vendor_id
+                      AND  vendor_site_code = r.vendor_site_code
                       AND  org_id = c_new_org_id
                       AND  ROWNUM = 1;
                 EXCEPTION
                     WHEN NO_DATA_FOUND THEN
-                        l_new_vendor_site_id := NULL;
+                        l_rejection_reason := 'Vendor site ' || r.vendor_site_code
+                                              || ' not found for vendor ' || r.vendor_code
+                                              || ' in org ' || c_new_org_id;
+                        RAISE_APPLICATION_ERROR(-20002, l_rejection_reason);
                 END;
-        END;
 
-        -- Generate new invoice_id for local interface
-        SELECT ap_invoices_interface_s.NEXTVAL
-        INTO   l_new_invoice_id
-        FROM   dual;
-
-        -- Insert into new instance AP invoice interface
-        INSERT INTO ap_invoices_interface (
-            invoice_id,
-            invoice_num,
-            vendor_id,
-            vendor_site_id,
-            invoice_amount,
-            invoice_currency_code,
-            invoice_date,
-            terms_date,
-            terms_id,
-            description,
-            source,
-            org_id,
-            payment_method_code,
-            invoice_type_lookup_code,
-            attribute2,
-            attribute5,
-            gl_date,
-            created_by,
-            creation_date,
-            last_updated_by,
-            last_update_date,
-            status
-        ) VALUES (
-            l_new_invoice_id,
-            'TRAN-' || p_invoice_num,
-            l_new_vendor_id,
-            l_new_vendor_site_id,
-            p_invoice_amount,
-            NVL(p_invoice_currency_code, 'INR'),
-            p_invoice_date,
-            p_terms_date,
-            p_terms_id,
-            p_description,
-            NVL(p_source, 'TRANSPORT'),
-            c_new_org_id,
-            NVL(p_payment_method_code, 'NEFT'),
-            NVL(p_invoice_type_lookup_code, c_invoice_type),
-            p_attribute2,
-            p_invoice_num,          -- store original invoice_num in attribute5
-            TRUNC(SYSDATE),
-            c_created_by,
-            SYSDATE,
-            c_created_by,
-            SYSDATE,
-            NULL
-        );
-
-        x_new_invoice_id := l_new_invoice_id;
-
-        -- Log success
-        INSERT INTO xxcust_po_ap_interface_log (
-            run_id,
-            transaction_class,
-            legacy_po_number,
-            legacy_vendor_id,
-            vendor_name,
-            invoice_num,
-            invoice_amount,
-            interface_status
-        ) VALUES (
-            'TRAN-' || TO_CHAR(SYSDATE, 'YYYYMMDD-HH24MISS'),
-            c_class_transport,
-            p_invoice_num,
-            p_vendor_id,
-            (SELECT vendor_name FROM ap_suppliers WHERE vendor_id = l_new_vendor_id AND ROWNUM = 1),
-            'TRAN-' || p_invoice_num,
-            p_invoice_amount,
-            c_status_processed
-        );
-
-        -- COMMIT;
-
-        log_message('PROCESS C: insert_transport_invoice END — new_invoice_id=' || l_new_invoice_id);
-
-    EXCEPTION
-        WHEN OTHERS THEN
-            -- ROLLBACK;
-            x_return_status := 'E';
-            x_return_msg := 'insert_transport_invoice error: ' || SQLERRM;
-            log_message(x_return_msg);
-    END insert_transport_invoice;
-
-    /* =========================================================================
-       PROCESS C: Transport Invoice Line Insert
-       Called from old EBS via DB link after ap_invoice_lines_interface insert.
-       Maps dist_code_combination_id (legacy CCID) to new chart of accounts,
-       then inserts into local ap_invoice_lines_interface.
-       ========================================================================= */
-    PROCEDURE insert_transport_inv_line (
-        p_new_invoice_id            IN NUMBER,
-        p_line_number               IN NUMBER,
-        p_line_type_lookup_code     IN VARCHAR2,
-        p_amount                    IN NUMBER,
-        p_description               IN VARCHAR2,
-        p_inventory_item_id         IN NUMBER,
-        p_dist_code_combination_id  IN NUMBER,
-        p_reference_1               IN VARCHAR2,
-        p_reference_2               IN VARCHAR2,
-        p_legacy_segment2           IN VARCHAR2,    -- legacy gcc.segment2 (costcenter/department)
-        p_legacy_segment4           IN VARCHAR2,    -- legacy gcc.segment4 (account)
-        x_return_status             OUT VARCHAR2,
-        x_return_msg                OUT VARCHAR2
-    ) IS
-        l_new_ccid          NUMBER;
-        l_line_interface_id NUMBER;
-        l_old_seg2          VARCHAR2(25);
-        l_old_seg4          VARCHAR2(25);
-        l_seg3_account      VARCHAR2(25);
-        l_seg4_department   VARCHAR2(25);
-        l_seg5_product      VARCHAR2(50);
-    BEGIN
-        x_return_status := 'S';
-        x_return_msg := NULL;
-
-        log_message('PROCESS C: insert_transport_inv_line START — invoice_id='
-                    || p_new_invoice_id || ' line=' || p_line_number);
-
-        -- Map legacy CCID to new CCID
-        IF p_dist_code_combination_id IS NOT NULL THEN
-            BEGIN
-                -- Get old segments (passed from legacy side to avoid DB link loop)
-                l_old_seg2 := p_legacy_segment2;
-                l_old_seg4 := p_legacy_segment4;
-
-                -- Map account segment
-                l_seg3_account := get_account_segment(TO_NUMBER(l_old_seg4));
-                IF l_seg3_account IS NULL THEN
-                    IF p_inventory_item_id IS NOT NULL THEN
-                        l_seg3_account := get_account_segment_fallback(p_inventory_item_id);
-                    ELSE
-                        l_seg3_account := '821130';  -- transport default
-                    END IF;
+                -- ---------------------------------------------------------
+                -- STEP 3: Determine invoice type
+                -- STANDARD  → 'STANDARD'
+                -- DEBIT     → 'DEBIT' (Debit Memo in AP = negative invoice)
+                -- ---------------------------------------------------------
+                IF UPPER(r.invoice_type) LIKE '%DEBIT%' THEN
+                    l_invoice_type := 'DEBIT';
+                ELSE
+                    l_invoice_type := 'STANDARD';
                 END IF;
 
-                -- Map department segment
-                l_seg4_department := get_department_segment(TO_NUMBER(l_old_seg2));
+                -- ---------------------------------------------------------
+                -- STEP 4: Determine invoice amount
+                -- For DEBIT memos: amount should be positive in staging
+                -- (AP handles sign based on invoice_type_lookup_code)
+                -- ---------------------------------------------------------
+                l_invoice_amount := r.invoice_amount;
 
-                -- Resolve product segment before SQL
-                l_seg5_product := NVL(get_product_segment(p_inventory_item_id), '00000000');
+                -- ---------------------------------------------------------
+                -- STEP 5: Determine invoice date (use end of service period)
+                -- ---------------------------------------------------------
+                l_invoice_date := NVL(r.invoice_date_to, TRUNC(SYSDATE));
 
-                -- Look up or create new CCID
+                -- ---------------------------------------------------------
+                -- STEP 6: Resolve payment terms
+                -- ---------------------------------------------------------
                 BEGIN
-                    SELECT gcc.code_combination_id
-                    INTO   l_new_ccid
-                    FROM   gl_code_combinations gcc
-                    WHERE  gcc.chart_of_accounts_id = c_chart_of_accounts_id
-                      AND  gcc.segment1 = '01'
-                      AND  gcc.segment2 = '01'                   -- division default for transport
-                      AND  gcc.segment3 = l_seg3_account
-                      AND  gcc.segment4 = l_seg4_department
-                      AND  gcc.segment5 = l_seg5_product
-                      AND  gcc.segment6 = '0'                    -- txn type default
-                      AND  gcc.segment7 = '000'
-                      AND  gcc.segment8 = '000'
-                      AND  gcc.enabled_flag = 'Y';
+                    SELECT term_id
+                    INTO   l_terms_id
+                    FROM   ap_terms
+                    WHERE  UPPER(name) LIKE '%' || UPPER(NVL(r.payment_terms, '30 days')) || '%'
+                      AND  ROWNUM = 1;
                 EXCEPTION
                     WHEN NO_DATA_FOUND THEN
-                        l_new_ccid := fnd_flex_ext.get_ccid(
-                            application_short_name => 'SQLGL',
-                            key_flex_code          => 'GL#',
-                            structure_number       => c_chart_of_accounts_id,
-                            validation_date        => TO_CHAR(SYSDATE, 'DD-MON-YYYY'),
-                            concatenated_segments  => '01.01.' || l_seg3_account || '.'
-                                                      || l_seg4_department || '.'
-                                                      || l_seg5_product
-                                                      || '.0.000.000'
-                        );
-                        IF NVL(l_new_ccid, 0) = 0 THEN
-                            log_message('FND_FLEX_EXT.GET_CCID failed: ' || fnd_flex_ext.get_message);
-                            l_new_ccid := 00000;
-                        END IF;
+                        l_terms_id := NULL;  -- let AP default from supplier site
                 END;
+
+                -- ---------------------------------------------------------
+                -- STEP 7: Resolve liability account CCID
+                -- ---------------------------------------------------------
+                IF r.liability_account IS NOT NULL THEN
+                    BEGIN
+                        SELECT code_combination_id
+                        INTO   l_liability_ccid
+                        FROM   gl_code_combinations
+                        WHERE  segment3 = r.liability_account
+                          AND  chart_of_accounts_id = c_chart_of_accounts_id
+                          AND  enabled_flag = 'Y'
+                          AND  ROWNUM = 1;
+                    EXCEPTION
+                        WHEN NO_DATA_FOUND THEN
+                            l_liability_ccid := NULL;  -- let AP default
+                    END;
+                ELSE
+                    l_liability_ccid := NULL;
+                END IF;
+
+                -- ---------------------------------------------------------
+                -- STEP 8: Duplicate check
+                -- ---------------------------------------------------------
+                DECLARE
+                    l_dup_count NUMBER;
+                BEGIN
+                    SELECT COUNT(*)
+                    INTO   l_dup_count
+                    FROM   xxcust_po_ap_interface_log
+                    WHERE  invoice_num = r.invoice_num
+                      AND  legacy_po_number = r.po_number
+                      AND  interface_status = c_status_processed
+                      AND  transaction_class = 'TRANSPORT';
+
+                    IF l_dup_count > 0 THEN
+                        l_rejection_reason := 'Invoice ' || r.invoice_num
+                                              || ' for PO ' || r.po_number
+                                              || ' already processed. Duplicate skipped.';
+                        RAISE_APPLICATION_ERROR(-20003, l_rejection_reason);
+                    END IF;
+                END;
+
+                -- ---------------------------------------------------------
+                -- STEP 9: Generate interface IDs and load
+                -- ---------------------------------------------------------
+                SELECT AP_INVOICES_INTERFACE_S.NEXTVAL INTO l_invoice_interface_id FROM dual;
+                SELECT AP_INVOICE_LINES_INTERFACE_S.NEXTVAL INTO l_line_interface_id FROM dual;
+
+                -- Invoice number from staging
+                l_invoice_num := r.invoice_num;
+
+                -- ---------------------------------------------------------
+                -- LOAD: AP Invoice Header
+                -- ---------------------------------------------------------
+                INSERT INTO ap_invoices_interface (
+                    invoice_id,
+                    invoice_num,
+                    invoice_type_lookup_code,
+                    invoice_date,
+                    vendor_id,
+                    vendor_site_id,
+                    invoice_amount,
+                    invoice_currency_code,
+                    description,
+                    source,
+                    group_id,
+                    org_id,
+                    gl_date,
+                    terms_id,
+                    payment_method_code,
+                    pay_group_lookup_code,
+                    created_by,
+                    creation_date,
+                    last_updated_by,
+                    last_update_date,
+                    attribute5,
+                    attribute6,
+                    attribute7,
+                    status
+                ) VALUES (
+                    l_invoice_interface_id,
+                    l_invoice_num,
+                    l_invoice_type,
+                    l_invoice_date,
+                    l_vendor_id,
+                    l_vendor_site_id,
+                    l_invoice_amount,
+                    'INR',
+                    r.description
+                    || ' | PO# ' || r.po_number
+                    || ' | Period: ' || TO_CHAR(r.invoice_date_from, 'DD-MON-YYYY')
+                    || ' to ' || TO_CHAR(r.invoice_date_to, 'DD-MON-YYYY'),
+                    c_source_name,
+                    l_group_id,
+                    c_new_org_id,
+                    TRUNC(SYSDATE),
+                    l_terms_id,
+                    'EFT',       -- RTGS/NEFT
+                    NVL(r.pay_group, c_pay_group),
+                    c_created_by,
+                    SYSDATE,
+                    c_created_by,
+                    SYSDATE,
+                    r.po_number,                   -- PO reference
+                    r.tds_section,                 -- TDS section reference
+                    r.gst_tax_rate,                -- GST/RCM reference
+                    NULL
+                );
+
+                -- ---------------------------------------------------------
+                -- LOAD: AP Invoice Line
+                -- ---------------------------------------------------------
+                INSERT INTO ap_invoice_lines_interface (
+                    invoice_id,
+                    invoice_line_id,
+                    line_number,
+                    line_type_lookup_code,
+                    amount,
+                    description,
+                    dist_code_combination_id,
+                    accounting_date,
+                    org_id,
+                    created_by,
+                    creation_date,
+                    last_updated_by,
+                    last_update_date,
+                    attribute5
+                ) VALUES (
+                    l_invoice_interface_id,
+                    l_line_interface_id,
+                    1,
+                    'ITEM',
+                    l_invoice_amount,
+                    r.description
+                    || ' | PO# ' || r.po_number
+                    || ' | ' || r.vendor_name,
+                    l_liability_ccid,
+                    TRUNC(SYSDATE),
+                    c_new_org_id,
+                    c_created_by,
+                    SYSDATE,
+                    c_created_by,
+                    SYSDATE,
+                    r.po_number
+                );
+
+                -- ---------------------------------------------------------
+                -- LOG successful processing
+                -- ---------------------------------------------------------
+                INSERT INTO xxcust_po_ap_interface_log (
+                    run_id,
+                    transaction_class,
+                    legacy_po_number,
+                    legacy_vendor_id,
+                    vendor_name,
+                    receipt_amount,
+                    invoice_num,
+                    invoice_amount,
+                    interface_status
+                ) VALUES (
+                    l_run_id,
+                    'TRANSPORT',
+                    r.po_number,
+                    l_vendor_id,
+                    r.vendor_name,
+                    r.basic_amount,
+                    l_invoice_num,
+                    l_invoice_amount,
+                    c_status_processed
+                );
+
+                -- Update staging record
+                UPDATE xxcust_transport_invoice_stg
+                SET    process_status = 'PROCESSED',
+                       run_id = l_run_id,
+                       last_updated_by = c_created_by,
+                       last_update_date = SYSDATE
+                WHERE  stg_id = r.stg_id;
+
+                l_records_processed := l_records_processed + 1;
+
+                IF p_debug_mode = 'Y' THEN
+                    log_message('PROCESSED: ' || l_invoice_type || ' | Invoice: ' || l_invoice_num
+                                || ' | Vendor: ' || r.vendor_name
+                                || ' | Amount: ' || l_invoice_amount
+                                || ' | PO# ' || r.po_number);
+                END IF;
+
             EXCEPTION
                 WHEN OTHERS THEN
-                    log_message('CCID mapping error for legacy_ccid=' || p_dist_code_combination_id
-                                || ': ' || SQLERRM);
-                    l_new_ccid := 00000;
+                    l_error_message := NVL(l_rejection_reason, SQLERRM);
+
+                    -- Determine status: rejection vs error
+                    IF l_rejection_reason IS NOT NULL THEN
+                        UPDATE xxcust_transport_invoice_stg
+                        SET    process_status = 'REJECTED',
+                               process_message = l_rejection_reason,
+                               run_id = l_run_id,
+                               last_updated_by = c_created_by,
+                               last_update_date = SYSDATE
+                        WHERE  stg_id = r.stg_id;
+
+                        INSERT INTO xxcust_po_ap_interface_log (
+                            run_id, transaction_class, legacy_po_number,
+                            vendor_name, invoice_num, invoice_amount,
+                            interface_status, rejection_reason
+                        ) VALUES (
+                            l_run_id, 'TRANSPORT', r.po_number,
+                            r.vendor_name, r.invoice_num, r.invoice_amount,
+                            c_status_rejected, l_rejection_reason
+                        );
+
+                        l_records_rejected := l_records_rejected + 1;
+                        log_message('REJECTED: ' || r.invoice_num || ' | ' || l_rejection_reason);
+                    ELSE
+                        UPDATE xxcust_transport_invoice_stg
+                        SET    process_status = 'ERROR',
+                               process_message = l_error_message,
+                               run_id = l_run_id,
+                               last_updated_by = c_created_by,
+                               last_update_date = SYSDATE
+                        WHERE  stg_id = r.stg_id;
+
+                        INSERT INTO xxcust_po_ap_interface_log (
+                            run_id, transaction_class, legacy_po_number,
+                            vendor_name, invoice_num, invoice_amount,
+                            interface_status, rejection_reason
+                        ) VALUES (
+                            l_run_id, 'TRANSPORT', r.po_number,
+                            r.vendor_name, r.invoice_num, r.invoice_amount,
+                            c_status_error, l_error_message
+                        );
+
+                        l_records_errored := l_records_errored + 1;
+                        log_message('ERROR: ' || r.invoice_num || ' | ' || l_error_message);
+                    END IF;
             END;
-        ELSE
-            l_new_ccid := 00000;
-        END IF;
-
-        log_message('  legacy_ccid=' || p_dist_code_combination_id || ' → new_ccid=' || l_new_ccid);
-
-        -- Generate line interface id
-        SELECT ap_invoice_lines_interface_s.NEXTVAL
-        INTO   l_line_interface_id
-        FROM   dual;
-
-        -- Insert into new instance AP invoice lines interface
-        -- NOTE: inventory_item_id is NOT inserted because it is the legacy item ID
-        -- which does not exist in the new EBS instance (causes APP-FND-00756 MSTK error)
-        INSERT INTO ap_invoice_lines_interface (
-            invoice_id,
-            invoice_line_id,
-            line_number,
-            line_type_lookup_code,
-            amount,
-            description,
-            dist_code_combination_id,
-            accounting_date,
-            org_id,
-            created_by,
-            creation_date,
-            last_updated_by,
-            last_update_date,
-            attribute5
-        ) VALUES (
-            p_new_invoice_id,
-            l_line_interface_id,
-            p_line_number,
-            NVL(p_line_type_lookup_code, 'ITEM'),
-            p_amount,
-            p_description,
-            l_new_ccid,
-            TRUNC(SYSDATE),
-            c_new_org_id,
-            c_created_by,
-            SYSDATE,
-            c_created_by,
-            SYSDATE,
-            p_reference_1 || '|' || p_reference_2   -- store route/date info
-        );
-
-        -- COMMIT;
-
-        log_message('PROCESS C: insert_transport_inv_line END');
-
-    EXCEPTION
-        WHEN OTHERS THEN
-            -- ROLLBACK;
-            x_return_status := 'E';
-            x_return_msg := 'insert_transport_inv_line error: ' || SQLERRM;
-            log_message(x_return_msg);
-    END insert_transport_inv_line;
-
-    -- =========================================================================
-    -- PROCESS D: Submit AP Open Interface Import (APXIIMPT)
-    -- Submits the Payables Open Interface Import concurrent program to
-    -- create AP invoices from data in AP_INVOICES_INTERFACE /
-    -- AP_INVOICE_LINES_INTERFACE. Waits for the program to complete and
-    -- returns the request ID and status.
-    -- =========================================================================
-    PROCEDURE run_ap_import (
-        p_source         IN VARCHAR2 DEFAULT 'TRANSPORT',
-        x_request_id     OUT NUMBER,
-        x_return_status  OUT VARCHAR2,
-        x_return_msg     OUT VARCHAR2
-    ) IS
-        PRAGMA AUTONOMOUS_TRANSACTION;
-        l_request_id    NUMBER;
-        l_boolean       BOOLEAN;
-        l_phase         VARCHAR2(200);
-        l_status        VARCHAR2(200);
-        l_dev_phase     VARCHAR2(200);
-        l_dev_status    VARCHAR2(200);
-        l_message       VARCHAR2(200);
-        -- Application context for concurrent request submission
-        l_user_id       NUMBER;
-        l_resp_id       NUMBER;
-        l_resp_appl_id  NUMBER := 200;   -- SQLAP (Payables)
-    BEGIN
-        x_return_status := 'S';
-        x_request_id    := 0;
-
-        -- Get a valid FND user in the new instance
-        BEGIN
-            SELECT user_id
-            INTO   l_user_id
-            FROM   fnd_user
-            WHERE  user_name = 'SYSADMIN'
-              AND  (end_date IS NULL OR end_date > SYSDATE);
-        EXCEPTION
-            WHEN NO_DATA_FOUND THEN
-                -- Fallback: first active user
-                SELECT user_id
-                INTO   l_user_id
-                FROM   fnd_user
-                WHERE  (end_date IS NULL OR end_date > SYSDATE)
-                  AND  ROWNUM = 1;
-        END;
-
-        -- Get a Payables responsibility that has access to the operating unit
-        BEGIN
-            SELECT responsibility_id
-            INTO   l_resp_id
-            FROM   fnd_responsibility
-            WHERE  application_id = 200              -- SQLAP
-              AND  end_date IS NULL
-              AND  ROWNUM = 1;
-        EXCEPTION
-            WHEN NO_DATA_FOUND THEN
-                x_return_status := 'E';
-                x_return_msg    := 'No active Payables responsibility found for apps_initialize.';
-                log_message('run_ap_import: ' || x_return_msg);
-                ROLLBACK;
-                RETURN;
-        END;
-
-        log_message('run_ap_import: apps_initialize user_id=' || l_user_id
-                    || ' resp_id=' || l_resp_id || ' resp_appl_id=' || l_resp_appl_id);
-
-        fnd_global.apps_initialize(user_id      => l_user_id,
-                                   resp_id      => l_resp_id,
-                                   resp_appl_id => l_resp_appl_id);
-
-        -- Init MO context; if responsibility lacks MO: Security Profile, ignore the error
-        BEGIN
-            mo_global.init('SQLAP');
-        EXCEPTION
-            WHEN OTHERS THEN
-                log_message('run_ap_import: mo_global.init warning: ' || SQLERRM);
-        END;
-
-        -- Override to single-org mode for the target operating unit (must be AFTER init)
-        mo_global.set_policy_context('S', c_new_org_id);
-
-        -- Set NLS options explicitly (autonomous txn does not inherit caller's NLS context)
-        IF NOT fnd_request.set_options(language => 'AMERICAN', territory => 'AMERICA') THEN
-            log_message('run_ap_import: fnd_request.set_options warning — proceeding anyway');
-        END IF;
-
-        l_request_id := fnd_request.submit_request(
-            application   => 'SQLAP',
-            program       => 'APXIIMPT',
-            description   => 'Transport Billing - AP Open Interface Import',
-            start_time    => NULL,
-            sub_request   => FALSE,
-            argument1     => TO_CHAR(c_new_org_id), -- org_id (81)
-            argument2     => p_source,              -- source (TRANSPORT)
-            argument3     => '',                    -- group_id
-            argument4     => '',                    -- batch_name
-            argument5     => '',                    -- hold_name
-            argument6     => '',                    -- hold_reason
-            argument7     => '',                    -- gl_date
-            argument8     => 'N',                   -- purge
-            argument9     => 'N',                   -- trace_switch
-            argument10    => 'N',                   -- debug_switch
-            argument11    => 'N',                   -- summarize_report
-            argument12    => '1000',                -- commit_batch_size
-            argument13    => TO_CHAR(l_user_id),    -- user_id
-            argument14    => TO_CHAR(fnd_global.login_id), -- login_id
-            argument15    => 'N'                    -- skip_validation
-        );
-
-        x_request_id := l_request_id;
-
-        IF l_request_id = 0 THEN
-            x_return_status := 'E';
-            x_return_msg    := 'Failed to submit APXIIMPT: ' || fnd_message.get;
-            log_message('run_ap_import: ' || x_return_msg);
-            ROLLBACK;
-            RETURN;
-        END IF;
-
-        COMMIT;  -- must COMMIT after submit_request so concurrent manager can see it
-
-        log_message('run_ap_import: Submitted request_id=' || l_request_id);
-
-        l_boolean := fnd_concurrent.wait_for_request(
-            request_id => l_request_id,
-            interval   => 20,
-            max_wait   => 0,
-            phase      => l_phase,
-            status     => l_status,
-            dev_phase  => l_dev_phase,
-            dev_status => l_dev_status,
-            message    => l_message
-        );
-
-        log_message('run_ap_import: wait_for_request returned boolean=' || CASE WHEN l_boolean THEN 'TRUE' ELSE 'FALSE' END);
-        log_message('run_ap_import: phase=' || l_phase || ' status=' || l_status
-                    || ' dev_phase=' || l_dev_phase || ' dev_status=' || l_dev_status
-                    || ' message=' || l_message);
-
-        -- Check using dev_phase/dev_status (canonical values) as they are more reliable
-        -- than display values, especially from an autonomous transaction context.
-        -- dev_phase=COMPLETE and dev_status=NORMAL means success.
-        IF l_dev_status = 'NORMAL' OR l_status = 'Normal' THEN
-            x_return_msg := 'AP Open Interface Import completed successfully. Request ID: ' || l_request_id;
-            log_message('run_ap_import: ' || x_return_msg);
-        ELSIF l_dev_phase IS NULL AND l_status IS NULL THEN
-            -- wait_for_request could not read status (autonomous txn limitation)
-            -- The request was submitted and committed; treat as success with caveat
-            x_return_msg := 'AP Open Interface Import submitted. Request ID: '
-                            || l_request_id || '. Status could not be read — verify in concurrent manager.';
-            log_message('run_ap_import: ' || x_return_msg);
-        ELSE
-            x_return_status := 'E';
-            x_return_msg    := 'AP Open Interface Import failed. Request ID: '
-                               || l_request_id || '. Status: ' || NVL(l_dev_status, l_status)
-                               || '. Message: ' || l_message;
-            log_message('run_ap_import: ' || x_return_msg);
-        END IF;
+        END LOOP;
 
         COMMIT;
+        log_message('============================================================');
+        log_message('PROCESS C Complete - Run ID: ' || l_run_id);
+        log_message('  Processed : ' || l_records_processed);
+        log_message('  Rejected  : ' || l_records_rejected);
+        log_message('  Errors    : ' || l_records_errored);
+        log_message('Next: Run Payables Open Interface Import | Source: '
+                    || c_source_name || ' | Group ID: ' || l_group_id);
+        log_message('============================================================');
+
+        IF l_records_rejected > 0 OR l_records_errored > 0 THEN
+            p_retcode := 1;
+            p_errbuf := 'Process C completed with '
+                        || l_records_rejected || ' rejections and '
+                        || l_records_errored || ' errors. Review XXCUST_PO_AP_INTERFACE_LOG.';
+        END IF;
+
     EXCEPTION
         WHEN OTHERS THEN
             ROLLBACK;
-            x_return_status := 'E';
-            x_return_msg    := 'run_ap_import error: ' || SUBSTR(SQLERRM, 1, 250);
-            log_message(x_return_msg);
-    END run_ap_import;
+            p_retcode := 2;
+            p_errbuf := 'Process C fatal error: ' || SQLERRM;
+            log_message('FATAL ERROR (Process C): ' || SQLERRM);
+    END run_transport_interface;
 
     -- =========================================================================
     -- Purge successfully processed log records older than N days
