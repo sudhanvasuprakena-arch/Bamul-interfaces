@@ -49,6 +49,7 @@ Run as **APPS** user in the following order:
 | 2 | `02_Populate_COGS_Details.sql` | Populates `XX_COGS_DETAILS` with 757 products |
 | 3 | `03_OM_to_GL_Package_Spec.sql` | Creates package spec: `XXCUST_OM_GL_INTERFACE_PKG` |
 | 4 | `04_OM_to_GL_Package_Body.sql` | Creates package body: `XXCUST_OM_GL_INTERFACE_PKG` |
+| 5 | `Integration_reference_only.sql.sql` | It is only for reference of integration. Don't run this one. |
 
 ---
 
